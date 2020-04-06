@@ -1,0 +1,98 @@
+<odoo>
+  <data>  
+
+
+    <!-- Window Menu Items -->
+    <act_window id="rof_action_window"  
+            name="Requisition Order"  
+            res_model="carson.rof"
+            view_mode="tree,form,kanban" />
+
+    <act_window id="rof_area_action_window"  
+            name="Areas"  
+            res_model="carson.rof.area"
+            view_mode="tree,form" />
+
+    <act_window id="rof_zone_action_window"  
+            name="Zones"  
+            res_model="carson.rof.zone"
+            view_mode="tree,form" />
+    
+    <menuitem  id="rof_menu"  
+            name="Requisition Order"  
+            action="rof_action_window" 
+            parent="stock.menu_stock_warehouse_mgmt" 
+            sequence="1" />
+
+
+    <!-- Carson Projects -->
+    <act_window id="carson_proj_action_window"  
+            name="Projects"  
+            res_model="carson.projects"
+            view_mode="tree,form" />
+
+    <menuitem id="carson_menu_root"
+            name="Carson"
+            web_icon="carson_module,static/src/img/icon.png"
+            groups="carson_module.group_op_manager"
+            sequence="7"/>
+
+    <menuitem  id="menu-carson_project"  
+            name="Projects"
+            parent="carson_module.carson_menu_root"
+            action="carson_proj_action_window" 
+            groups="carson_module.group_op_manager"
+            sequence="1" /> 
+
+    <menuitem id="menu_carson_job_order"
+            name="Job Orders"
+            parent="carson_module.carson_menu_root"
+            action="carson_module.carson_job_order_action"
+            groups="carson_module.group_op_manager" 
+            sequence="2"/>
+
+    <menuitem id="menu_rof_item_report"
+            name="Item Requisition Report"
+            parent="stock.menu_warehouse_report"
+            action="carson_module.rof_item_report"
+            groups="stock.group_stock_manager" 
+            sequence="1000"/>
+
+    <menuitem id="menu_rof_area"
+            name="Areas"
+            parent="stock.menu_stock_config_settings"
+            action="carson_module.rof_area_action_window"
+            groups="stock.group_stock_manager" 
+            sequence="1000"/>
+
+    <menuitem id="menu_rof_zone"
+            name="Zones"
+            parent="stock.menu_stock_config_settings"
+            action="carson_module.rof_zone_action_window"
+            groups="stock.group_stock_manager" 
+            sequence="1001"/>
+
+    <menuitem id="menu_stock_tools" name="Tools" parent="stock.menu_stock_root" sequence="99" groups="base.group_no_one"/>
+    <menuitem id="menu_stock_move_update" name="Stock Move Update" parent="menu_stock_tools" sequence="1" action="carson_module.act_move_update_open"/>
+
+    <!-- Material Transmittal -->
+    <record model="ir.ui.menu" id="stock.all_picking">
+          <field name="name">Material Transmittals</field>
+    </record>
+
+    <record id="stock.action_picking_tree_all" model="ir.actions.act_window">
+        <field name="name">Material Transmittals</field>
+    </record>
+
+    <!-- Products -->
+    <record model="ir.ui.menu" id="stock.menu_product_variant_config_stock">
+          <field name="name">Items</field>
+    </record>
+    
+    <record model="ir.actions.act_window" id="stock.product_template_action_product">
+          <field name="name">Items</field>
+    </record>
+
+    </data>
+</odoo>
+

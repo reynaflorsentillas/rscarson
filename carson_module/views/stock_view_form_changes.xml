@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="view_picking_form_site_wrh_extend" model="ir.ui.view">
+            <field name="name">stock.picking.form.sitewarehouse.extend</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="carson_module.view_picking_form_extend" />
+            <field name="groups_id" eval="[(6,0, [ref('carson_module.group_site_warehouseman')])]"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='move_lines']/tree/field[@name='rof_id']" position="attributes">
+                    <attribute name="required"> 0 </attribute>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

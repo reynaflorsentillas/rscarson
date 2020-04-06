@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<data>
+
+    <record id="carson_rof_user_pin_view" model="ir.ui.view">
+        <field name="name">rof.user.pin.wizard.form</field>
+        <field name="model">rof.user.pin.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Operation Manager Override Verification">
+                <group>
+                    <group>
+                        <field name="rof_id" readonly="1" invisible="1" />
+                        <field name="pin_numb" password="true"/>
+                    </group>
+                </group>
+                <footer>
+
+                    <button name="apply" string="Apply" type="object" default_focus="1" class="oe_highlight"/>
+                    or
+                    <button special="cancel" string="Cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+
+
+    <record id="carson_rof_user_pin2_view" model="ir.ui.view">
+        <field name="name">rof.user.pin.wizard2.form</field>
+        <field name="model">rof.user.pin.wizard2</field>
+        <field name="arch" type="xml">
+            <form string="ROF User Pin Verification">
+                <group>
+                    <group>
+                        <field name="rof_id" readonly="1" invisible="1" />
+                        <field name="user_id" required="1" widget="selection"/>
+
+                        <field name="pin_numb" password="true"/>
+                    </group>
+                </group>
+                <group>
+                    <group string="Other Information">
+                        <field name="is_verifiedviapin_pic" readonly="1"/>
+                        <field name="is_verifiedviapin_pm" readonly="1"/>
+                        <field name="is_verifiedviapin_om" readonly="1"/>                        
+                    </group>                    
+                </group>                
+                <footer>
+
+                    <button name="apply" string="Apply" type="object" default_focus="1" class="oe_highlight"/>
+                    or
+                    <button special="cancel" string="Cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+
+</data>
+</odoo>

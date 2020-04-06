@@ -1,0 +1,222 @@
+<odoo>
+    <data>
+      <!-- Purchase Order -->
+      <report
+      id="rpt_daily_po_summ_act"
+      model="carson.rof.items"
+      string="Daily Purchase Summary"
+      report_type="qweb-pdf"
+      name="carson_module.rpt_daily_po_summ"
+      file="carson_module.rpt_daily_po_summ"
+      attachment_use="True"
+      paperformat="paperformat_sh_to_prnt_po"
+      print_report_name="'Daily Purchase Summary Report'"
+      />
+
+
+      <template id="rpt_daily_po_summ">
+          <t t-call="web.html_container">
+              <t t-set="sequence_report" t-value="docs.getSequence()"/>
+              <t t-set="project_lists" t-value="docs.getProject(docs)"/>              
+              <div class="page article shoot_to_print_page" style="top:0in;
+                                                                     left:0in;
+                                                                     position:relative;
+                                                                     font-size:12pt;
+                                                                     width:100%">
+                    <div class="shoot_to_print_page_1"  style="position:absolute; white-space: nowrap;">
+                        <div class="row mt32 mb32"> 
+                          <div class="col-xs-2" style="width:61%"/>
+                          <div class="col-xs-2 text-right">
+                            <p>REQ. NO.</p>
+                          </div>
+                          <div class="col-xs-2 text-right" syle="border-top: 1px black solid;border-bottom: 1px black solid;">
+                            <strong><span t-esc="sequence_report" style="background-color: #ffffcc !important;"/></strong>
+                          </div>                          
+                        </div>
+
+                        <div class="row mt32 mb32"> 
+                          <div class="col-xs-2">
+                            <p>DEPARTMENT:</p>
+                          </div>
+                          <div class="offset-xs-4"/>
+                          <div class="col-xs-2 text-center">
+                            <p>PURCHASING</p>
+                          </div>
+                        </div>
+
+                        <div class="row mt32 mb32"> 
+                          <div class="col-xs-2">
+                            <p>CUSTOMER:</p>
+                          </div>
+                          <div class="offset-xs-4"/>
+                          <div class="col-xs-2 text-center">
+                            <p><b>Warehouse</b></p>
+                          </div>
+                          <div class="col-xs-2 text-center" style="width:25%"/>
+                          <div class="col-xs-2 text-right">
+                            <p>DATE:</p>
+                          </div>
+                          <div class="col-xs-2 text-right">
+                            <span t-esc="docs.getDateToday()"/>
+                          </div>
+                        </div>
+                        <table class="table table-bordered table-condensed">
+                          <thead>
+                              <tr>
+                                <td class="text-center" style="border: 1px solid black;" colspan="2"><strong>QTY</strong></td>
+                                <td class="text-center" style="border: 1px solid black;"><strong>UOM</strong></td>
+                                <td class="text-center" style="border: 1px solid black;"><strong>PARTICULARS</strong></td>
+                                <td class="text-center" style="border: 1px solid black;"><strong>COST</strong></td>
+                                <td class="text-center" style="border: 1px solid black;"><strong>SUPPLIER</strong></td>
+                                <td class="text-center" style="border: 1px solid black;"><strong>REQ</strong></td>
+                                <td class="text-center" style="border: 1px solid black;"><strong>ALLOCATION</strong></td>
+                              </tr>                            
+                          </thead>
+                          <tbody>
+                              <t t-set="sequnce" t-value="1"/>                                                          
+                              <t t-foreach="project_lists" t-as="project_list">
+                                  <t t-set="rof_lists" t-value="docs.getROF(project_list)"/>
+                                  
+                                  <t t-set="total_row" t-value="docs.getTotalRecordPerProject(project_list,docs)"/>
+                                  
+                                  <t t-set="rowspan_project" t-value="1"/>
+                                  <t t-foreach="rof_lists" t-as="rof_list">
+                                      <t t-set="item_lists" t-value="docs.getProductListByProject(rof_list,docs)"/>
+                                      <t t-set="rowspan_rof" t-value="1"/>
+                                      <t t-foreach="item_lists" t-as="item_list">
+                                        <tr>
+                                            <td class="text-center" style="border: 1px solid black;">
+                                                <span t-esc="sequnce"/>
+                                            </td>
+                                            <td class="text-center" style="border: 1px solid black;">
+                                                <span t-esc="item_list['quantity']"/>
+                                            </td>
+                                            <td class="text-center" style="border: 1px solid black;">
+                                                <span t-esc="item_list['product_uom']"/>
+                                            </td>
+                                            <td class="text-left" style="border: 1px solid black;">
+                                                <span t-esc="item_list['particulars']"/>
+                                            </td>
+                                            <td style="border: 1px solid black;"/>
+                                            <td style="border: 1px solid black;"/>
+                                            <t t-if="rowspan_rof == 1">
+                                              <td class="text-center" style="border: 1px solid black;vertical-align:middle;" t-att-rowspan="item_list['no']">
+                                                  <span t-esc="item_list['req_name']"/>
+                                              </td>   
+                                              <t t-set="rowspan_rof" t-value="0"/>
+                                              <t t-set="rowspan_rof" t-value="0"/>                                           
+                                            </t>
+                                            <t t-if="rowspan_project == 1">
+                                              <td class="text-center" style="border: 1px solid black;vertical-align:middle" t-att-rowspan="total_row">
+                                                  <span t-esc="item_list['allocation']"/>
+                                              </td>    
+                                              <t t-set="rowspan_project" t-value="0"/>                                           
+                                            </t>                                                                                   
+                                        </tr>
+
+                                          <t t-set="sequnce" t-value="sequnce+1"/>
+                                      </t>
+                                  </t>
+                              </t>
+                              <tr>
+                                  <td class="text-center" style="border: 1px solid black;" colspan="8">
+                                      <strong><span> ----- nothing follows ----- </span></strong>
+                                  </td>
+                              </tr>                                                                                         
+                          </tbody>
+                        </table>
+                        <div class="oe_structure"/>
+
+                        <t t-set="requestedby" t-value="docs.getRequestedBy()"/>
+                        <t t-set="logistichead" t-value="docs.getNotedBy()"/>
+                        <t t-set="ceo" t-value="docs.getApprovedBy()"/>
+                        
+                        <div class="row mt32 mb32"> 
+                          <div class="col-xs-2 text-center" style="width:33.333333333%">
+                            <strong><p>REQUESTED BY:</p></strong>
+                          </div>
+                          
+                          <div class="col-xs-2 text-center" style="width:33.333333333%">
+                            <strong><p>NOTED BY:</p></strong>
+                          </div>
+                          
+                          <div class="col-xs-2 text-center" style="width:33.333333333%">
+                            <strong><p>APPROVED BY:</p></strong>
+                          </div>                          
+                        </div>
+
+                        <div class="row mt32 mb32"> 
+                          <div class="col-xs-2 text-center" style="width:33.333333333%">
+                            <t t-if="requestedby.e_signature">
+                               <p style="width:150px; height:50px;margin-left:85px;margin-bottom:42px"><span t-field="requestedby.e_signature" t-field-options="{&quot;widget&quot;: &quot;image&quot;}"/></p>
+                            </t>                             
+                          </div>
+                          
+                          <div class="col-xs-2 text-center" style="width:33.333333333%">
+                            <t t-if="logistichead.e_signature">
+                               <p style="width:150px; height:50px;margin-left:85px;margin-bottom:42px"><span t-field="logistichead.e_signature" t-field-options="{&quot;widget&quot;: &quot;image&quot;}"/></p>
+                            </t> 
+                          </div>
+                          
+                          <div class="col-xs-2 text-center" style="width:33.333333333%">
+                            
+                          </div>                          
+                        </div>                           
+                        <div class="row mt32 mb32"> 
+                          <div class="col-xs-2 text-center" style="width:33.333333333%">
+                            <u><span t-esc="requestedby and requestedby.name or ''"/></u>
+                          </div>
+                          
+                          <div class="col-xs-2 text-center" style="width:33.333333333%">
+                            <u><span t-esc="logistichead and logistichead.name or ''"/></u>
+                          </div>
+                          
+                          <div class="col-xs-2 text-center" style="width:33.333333333%">
+                             <u><span t-esc="ceo and ceo.name or ''"/></u>
+                          </div>                          
+                        </div>                        
+
+                        <div class="row mt32 mb32"> 
+                          <div class="col-xs-2 text-center" style="width:33.333333333%"/>
+                          
+                          <div class="col-xs-2 text-center" style="width:33.333333333%"/>
+                          
+                          <div class="col-xs-2 text-center" style="width:33.333333333%">
+                             <p>GENERAL MANAGER</p>
+                          </div>                          
+                        </div>                         
+<!--
+                        <div class="row mt32 mb32"> 
+                          <div class="col-xs-2">
+                            <strong><p>CHECKED BY:</p></strong>
+                          </div>
+                        </div>
+
+                        <div class="row mt32 mb32"> 
+                          <div class="col-xs-2">
+                            <p> <span t-esc="report_checkedbyLogHead"/></p>
+                          </div>
+                          <div class="offset-xs-16"/>
+                          <div class="col-xs-2 text-center">
+                            <p> <span t-esc="report_checkedbyAuditor"/></p>
+                          </div>                          
+                        </div>
+
+                        <div class="row mt32 mb32"> 
+                          <div class="col-xs-2">
+                            <strong><p>NOTED BY:</p></strong>
+                          </div>
+                        </div>
+
+                        <div class="row mt32 mb32"> 
+                          <div class="col-xs-2">
+                            <p> <span t-esc="report_checkedbyPOHead"/></p>
+                          </div>
+                        </div>
+                      -->
+                    </div>
+              </div>         
+          </t>
+      </template>    
+    </data>
+</odoo>

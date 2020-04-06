@@ -1,0 +1,483 @@
+<odoo>
+  <data>
+    <record id="purchase.purchase_rfq" model="ir.actions.act_window">
+        <field name="name">PO for Approval</field>
+    </record>
+
+    <record id="purchase.menu_purchase_rfq" model="ir.ui.menu">
+        <field name="name">PO for Approval</field>
+    </record>
+<!--
+    <record model="ir.ui.view" id="view_purchase_order_filter_extend">
+        <field name="name">request.quotation.select.extend</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.view_purchase_order_filter"/>
+        <field name="arch" type="xml">
+            <field name="create_uid" position="after">
+              <field name="is_po_paid_by_cash"/>
+            </field>
+        </field>
+    </record>
+-->
+
+
+    <record model="ir.ui.view" id="view_purchase_order_filter_extend">
+        <field name="name">purchase.order.list.select.extend</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.view_purchase_order_filter"/>
+        <field name="arch" type="xml">
+            <field name="create_uid" position="after">
+              <field name="is_po_paid_by_cash"/>
+              <filter name="cash_transaction_today" string="Cash Purchase for Today" domain="[('is_po_paid_by_cash','=',True),
+                                                                                           ('state','=', 'validate_purchasing_confirmation'),
+                                                                                           ('activity_ids.date_deadline','=', context_today().strftime('%Y-%m-%d'))]"/>              
+            </field>
+        </field>
+    </record>
+<!--
+    <record id="purchase.view_purchase_order_filter" model="ir.ui.view">
+ ('activity_ids.date_deadline','=', context_today().strftime('%Y-%m-%d'))
+        <field name="create_uid" position="after">
+            <field name="is_po_paid_by_cash"/>
+            
+            <filter name="cash_transaction_today" string="Cash Transaction Today" domain="[('is_po_paid_by_cash','=',True),
+                                                                                           ('state','=', 'validate_purchasing_confirmation')                                                                                          
+                                                                                           ]"/>
+        </field>
+    </record>
+-->
+
+    
+
+    <record id="purchase_order_form_extend" model="ir.ui.view">
+      <field name="name">Purchase Order Form</field>
+      <field name="model">purchase.order</field>
+      <field name="inherit_id" ref="purchase.purchase_order_form"/>
+      <field name="arch" type="xml">
+
+        <!-- <xpath expr="//header/button[@name='button_confirm'][1]" position="attributes">
+          <attribute name="groups">carson_module.group_manager,base.group_system,base.group_erp_manager</attribute>
+        </xpath>
+        <xpath expr="//header/button[@name='button_confirm'][2]" position="attributes">
+          <attribute name="groups">carson_module.group_manager,base.group_system,base.group_erp_manager</attribute>
+        </xpath> -->
+        
+        <xpath expr="//header/button[@name='button_confirm'][2]" position="after">
+          <button name="validate_from_sent_to_ceo_approval" type="object" string="Request For Approval" class="oe_highlight" groups="carson_module.group_purchasing_ceo,carson_module.group_purchasing_allow_ceo_cfo_approval,carson_module.group_purchasing_allow_ceo_approval,carson_module.group_purchasing_staff" states="draft"/>
+        </xpath>
+        
+        <xpath expr="//header/button[@name='button_confirm'][2]" position="after">
+          <button name="validate_purchasing_qs" type="object" string="Validate for Purchasing QS" class="oe_highlight" groups="carson_module.group_purchasing_qs" states="validate_purchasing_qs"/>
+        </xpath>
+
+
+
+        <xpath expr="//header/button[@name='validate_purchasing_qs']" position="after">
+          <button name="validate_purchasing_head" type="object" string="Validate for Puchasing Head" class="oe_highlight"  groups="carson_module.group_purchasing_head" states="validate_purchasing_head"/>
+        </xpath>
+        <xpath expr="//header/button[@name='validate_purchasing_head']" position="after">
+          <button name="validate_purchasing_boq" type="object" string="Validate for Warehouse Head" class="oe_highlight" groups="carson_module.group_logistics_head" states="validate_logistic_head"/>
+        </xpath>
+
+
+        <!-- ADDED By SDS -->
+        <xpath expr="//header/button[@name='validate_purchasing_boq']" position="after">
+          <button name="validate_logistic_head_to_boq_staff" type="object" string="Validate for BOQ Staff" class="oe_highlight" groups="carson_module.group_logistics_head" states="validate_logistic_head" invisible="1"/>
+        </xpath>
+
+<!--
+        <xpath expr="//header/button[@name='validate_logistic_head_to_boq_staff']" position="after">
+          <button name="validate_purchasing_boq_staff_move_to_cost" type="object" string="Validate for Cost" class="oe_highlight" groups="carson_module.group_purchasing_boq" states="validate_purchasing_boq"/>
+        </xpath>
+-->
+        <xpath expr="//header/button[@name='validate_logistic_head_to_boq_staff']" position="after">
+          <button name="validate_purchasing_boq_staff_move_to_boq_head" type="object" string="Escalate to BOQ Head" class="oe_highlight" groups="carson_module.group_purchasing_boq" states="validate_purchasing_boq"/>
+        </xpath>
+
+
+
+        <xpath expr="//header/button[@name='validate_purchasing_boq']" position="after">      
+          <button name="validate_purchasing_cost" type="object" string="Validate for BOQ Head" class="oe_highlight" id="accounting_boq_head" groups="carson_module.group_purchasing_boq_head" states="validate_purchasing_boq_head"/>
+        </xpath>
+
+
+
+        <xpath expr="//header/button[@name='validate_purchasing_boq']" position="after">
+          <!--
+            Change group_purchasing_cost to group_purchasing_boq
+          -->          
+          <button name="validate_purchasing_cost" type="object" string="Validate for BOQ" class="oe_highlight" id="accounting_ap" groups="carson_module.group_purchasing_boq" states="validate_purchasing_boq"/>
+        </xpath>
+
+
+        <xpath expr="//header/button[@name='validate_purchasing_cost']" position="after">
+          <!--
+            Change accounting_ap to group_purchasing_cost
+                   
+          <button name="validate_accounting_staff_qs" type="object" string="Validate for Accounting Staff QS/AP-Head" class="oe_highlight" id="accounting_ap" groups="carson_module.group_purchasing_cost" states="validate_purchasing_cost"/>
+          --> 
+
+          <button name="validate_accounting_staff_qs" type="object" string="Validate for Cost" class="oe_highlight" id="accounting_ap" groups="carson_module.group_purchasing_cost" attrs="{'invisible':[('move_to_acct_staff_qs', '!=', True)]}"/>
+        </xpath>
+
+
+        <xpath expr="//header/button[@name='validate_purchasing_cost']" position="after">
+          <button name="validate_accounting_staff_qs" type="object" string="Validate for Cost" class="oe_highlight" id="accounting_ap" groups="carson_module.group_purchasing_cost" attrs="{'invisible':[('move_to_acct_ap_head', '!=', True)]}"/>
+        </xpath>
+
+
+        <xpath expr="//header/button[@name='validate_purchasing_cost']" position="after">
+          <button name="validate_from_ap_head_to_cfo_approval" type="object" string="Validate for AP Head" class="oe_highlight" id="accounting_ap_sct" groups="carson_module.group_purchasing_ap_head" states="validate_purchasing_ap_head"/>
+        </xpath>
+
+
+        <!-- NEW 
+        <xpath expr="//header/button[@name='validate_accounting_staff_qs']" position="after">        
+          <button name="validate_purchasing_ap_head_real" type="object" string="Validate for AP-Head" class="oe_highlight" id="accounting_ap_real" groups="carson_module.group_accounting_staff_qs" states="validate_accounting_staff_qs"/>
+        </xpath>
+        -->
+
+
+        <xpath expr="//header/button[@name='validate_accounting_staff_qs']" position="after">
+          <button name="validate_purchasing_ap_head" type="object" string="Validate for Accounting Staff QS" class="oe_highlight" id="accounting_ap" groups="carson_module.group_accounting_staff_qs" states="validate_accounting_staff_qs"/>
+        </xpath>
+        <!--Print RFQ Button-->
+        <xpath expr="//header/button[@name='print_quotation'][1]" position="replace">
+          <button name="print_quotation" type="object" string="Print POA" class="oe_highlight" id="accounting_ap" groups="carson_module.group_purchasing_staff" states="draft"/>
+        </xpath>
+        <xpath expr="//header/button[@name='print_quotation'][2]" position="replace">
+          <button name="print_quotation" type="object" string="Print POA" class="oe_highlight" id="accounting_ap" groups="carson_module.group_purchasing_staff" states="sent"/>
+        </xpath>     
+
+        <!-- RE-SEND RFQ BY EMAIL -->
+        <xpath expr="//header/button[@name='action_rfq_send'][1]" position="replace">
+          <button name="action_rfq_send" states="draft" string="Send POA by Email" type="object" context="{'send_rfq':True}" class="oe_highlight" groups="carson_module.group_purchasing_staff" />
+        </xpath> 
+        <xpath expr="//header/button[@name='action_rfq_send'][2]" position="replace">
+          <button name="action_rfq_send" states="sent" string="Re-Send POA by Email" type="object" context="{'send_rfq':True}" groups="carson_module.group_purchasing_staff" />
+        </xpath> 
+        <xpath expr="//header/button[@name='action_rfq_send'][3]" position="replace">
+          <button name="action_rfq_send" states="purchase" string="Send PO by Email" type="object" context="{'send_rfq':False}" groups="carson_module.group_purchasing_staff" />
+        </xpath>                 
+
+        <!-- ,sent -->
+        <xpath expr="//header/field[@name='state']" position="replace">
+          <field name="state" widget="statusbar" statusbar_visible="draft,purchase,validate_purchasing_qs,validate_purchasing_head,validate_logistic_head,validate_auditor,validate_purchasing_boq,validate_purchasing_boq_head,validate_purchasing_cost,validate_accounting_staff_qs,validate_purchasing_ap_head,validate_purchasing_cfo,validate_purchasing_confirmation" readonly="1"/>
+        </xpath>
+        <xpath expr="//button[@name='button_confirm'][1]" position="attributes">
+          <attribute name="invisible">1</attribute>
+        </xpath>
+
+
+        <xpath expr="//button[@name='button_confirm'][2]" position="before">
+            <button name="confirm_by_cfo" type="object" string="Validate For CFO" class="oe_highlight" id="accounting_ap_cfo" groups="carson_module.group_purchasing_cfo,carson_module.group_purchasing_allow_ceo_cfo_approval,carson_module.group_purchasing_allow_cfo_approval" attrs="{'invisible':[('allow_to_approve_by_cfo', '!=', True)]}"/>
+
+<!--
+            
+            <button name="validate_cash_transaction" type="object" string="Validate Cash Transaction by PO Head" context="{'for_purchasing_head_approval':True}"  groups="carson_module.group_purchasing_head" class="oe_highlight" attrs="{'invisible':[('allow_to_pocash_appov_phead', '!=', True)]}"/>
+
+
+            <button name="validate_cash_transaction" type="object" string="Validate Cash Transaction by Warehouse Head" context="{'for_logistic_head_approval':True}"  groups="carson_module.group_logistics_head" class="oe_highlight" attrs="{'invisible':[('allow_to_pocash_appov_loghead', '!=', True)]}"/>
+
+
+            attrs="{'invisible':[('allow_to_pocash_appov_audit', '!=', True)]}"
+-->
+
+            <button name="validate_cash_transaction" type="object" string="Validate For CEO" context="{'for_ceo_approval':True}"  groups="carson_module.group_purchasing_ceo,carson_module.group_purchasing_allow_ceo_cfo_approval,carson_module.group_purchasing_allow_ceo_approval,carson_module.group_purchasing_staff" class="oe_highlight"
+              attrs="{'invisible':[('allow_to_pocash_appov', '!=', True)]}"/>
+
+            <button name="validate_cash_transaction" type="object" string="Validate For Auditor" context="{'for_auditor_approval':True}"  groups="carson_module.group_purchasing_auditor" class="oe_highlight" states="validate_auditor"/>
+
+
+
+        </xpath>
+
+
+        <xpath expr="//button[@name='button_confirm'][2]" position="replace">
+          <field name="is_admin" attrs="{'invisible': 1}"/>
+          <button name="button_confirm" type="object" groups="carson_module.group_purchasing_staff,carson_module.group_manager,base.group_system,base.group_erp_manager,carson_module.group_purchasing_staff_cash" attrs="{'invisible':[('allow_to_confirm_po', '!=', False)]}" string="Confirm Order" class="oe_highlight" id="bid_confirm"/>
+          <!--
+          <attribute name="groups">carson_module.group_purchasing_qs</attribute>
+          <attribute name="attrs">{'invisible':[('allow_to_confirm_po', '!=', True),('state')]}</attribute>
+          <attribute name="string">Confirm Order</attribute>
+        -->
+        </xpath>
+        <xpath expr="//button[@name='button_cancel']" position="before">
+          <button name="button_reject" string="Reject"  states="sent,validate_purchasing_ceo,validate_purchasing_qs,validate_purchasing_head,validate_logistic_head,validate_auditor,validate_purchasing_boq,validate_purchasing_boq_head,validate_purchasing_cost,validate_accounting_staff_qs,validate_purchasing_ap_head,validate_purchasing_cfo,validate_purchasing_confirmation" class="btn-danger" type="object"/>
+        </xpath>
+
+        <xpath expr="//button[@name='button_cancel']" position="attributes">
+          <attribute name="states">draft</attribute>
+
+          <attribute name="groups">carson_module.group_purchasing_boq_head,carson_module.group_purchasing_head</attribute>
+        </xpath>
+
+        <xpath expr="//button[@name='button_cancel']" position="after">
+          <button name="button_cancel" states="purchase" groups="carson_module.group_purchasing_ap_head,carson_module.group_purchasing_head" string="Cancel" type="object"/>
+
+          <button name="button_cancel" states="sent,validate_purchasing_ceo,validate_purchasing_qs,validate_purchasing_head,validate_logistic_head,validate_auditor,validate_purchasing_boq,validate_purchasing_boq_head,validate_purchasing_cost,validate_accounting_staff_qs,validate_purchasing_ap_head,validate_purchasing_cfo,validate_purchasing_confirmation" groups="carson_module.group_purchasing_head" string="Cancel" type="object"/>
+
+          <!-- ARCHIVE/ACTIVATE ORDER BUTTONS -->
+          <button name="button_archive_order" type="object" string="ARCHIVE" class="btn-danger" attrs="{'invisible': ['|',('state', '!=', 'draft'),('active', '!=', True)]}" groups="carson_module.group_purchasing_staff,carson_module.group_purchase_manager"/>
+          <button name="button_active_order" type="object" string="ACTIVATE" class="btn-success" attrs="{'invisible': ['|',('state', '!=', 'draft'),('active', '!=', False)]}" groups="carson_module.group_purchasing_staff,carson_module.group_purchase_manager"/>
+        </xpath>
+
+        <xpath expr="//notebook/page[1]/field[@name='order_line']/tree/field[@name='product_id']" position="before">
+          <field name="project_id" groups="purchase.group_purchase_user,purchase.group_purchase_manager" string="Project" readonly="1"/>
+          <field name="rof_id" groups="purchase.group_purchase_user,purchase.group_purchase_manager" string="ROF" readonly="1"/>
+          <field name="area_id" groups="purchase.group_purchase_user,purchase.group_purchase_manager" string="ROF Area" readonly="1"/>
+          <field name="zone_id" groups="purchase.group_purchase_user,purchase.group_purchase_manager" string="ROF Zone" readonly="1"/>
+          <field name="rof_item_id" groups="purchase.group_purchase_user,purchase.group_purchase_manager" invisible="1"/>
+        </xpath>
+
+        <xpath expr="//notebook/page[1]/field[@name='order_line']/tree/field[@name='price_subtotal']" position="after">
+          <field name="override_price_subtotal" groups="purchase.group_purchase_manager,carson_module.group_purchasing_staff"/>
+          <field name="cost_indicator" groups="purchase.group_purchase_user,purchase.group_purchase_manager" required="0"/>
+        </xpath>
+
+        <xpath expr="//notebook/page[1]/field[@name='order_line']/tree/field[@name='price_unit']" position="attributes">
+          <attribute name="groups">purchase.group_purchase_user,purchase.group_purchase_manager</attribute>
+        </xpath>  
+
+        <xpath expr="//notebook/page[1]/field[@name='order_line']/tree/field[@name='taxes_id']" position="attributes">
+          <attribute name="groups">purchase.group_purchase_user,purchase.group_purchase_manager</attribute>
+        </xpath>  
+
+        <xpath expr="//notebook/page[1]/field[@name='order_line']/tree/field[@name='price_subtotal']" position="attributes">
+          <attribute name="groups">purchase.group_purchase_user,purchase.group_purchase_manager</attribute>
+        </xpath>          
+
+        <xpath expr="//notebook/page[1]/field[@name='order_line']/tree/field[@name='product_id']" position="attributes">
+          <attribute name="options">{'no_create_edit': True, 'no_quick_create': True, 'no_create':True}</attribute>
+        </xpath>
+
+        <xpath expr="//notebook/page[1]/group[1]" position="attributes">
+          <attribute name="groups">purchase.group_purchase_user,purchase.group_purchase_manager</attribute>
+        </xpath>
+
+
+        <xpath expr="//sheet/div[@class='oe_title']/label[1]" position="attributes">
+              <attribute name="string">PO for Approval </attribute>
+              <attribute name="attrs">{'invisible': [('state','not in',('draft',
+                                                                        'sent',
+                                                                        'validate_purchasing_ceo',
+                                                                        'validate_purchasing_qs',
+                                                                        'validate_purchasing_head',
+                                                                        'validate_logistic_head',
+                                                                        'validate_purchasing_boq',
+                                                                        'validate_purchasing_boq_head',
+                                                                        'validate_purchasing_cost',
+                                                                        'validate_accounting_staff_qs',
+                                                                        'validate_purchasing_ap_head',
+                                                                        'validate_purchasing_cfo',
+                                                                        'validate_purchasing_confirmation',
+                                                                        'validate_auditor'
+                                                                        ))]
+                                        }</attribute>
+        </xpath>
+
+        <xpath expr="//sheet/div[@class='oe_title']/label[2]" position="attributes">
+              <attribute name="attrs">{'invisible': [('state','in',('draft',
+                                                                        'sent',
+                                                                        'validate_purchasing_ceo',
+                                                                        'validate_purchasing_qs',
+                                                                        'validate_purchasing_head',
+                                                                        'validate_logistic_head',
+                                                                        'validate_purchasing_boq',
+                                                                        'validate_purchasing_boq_head',
+                                                                        'validate_purchasing_cost',
+                                                                        'validate_accounting_staff_qs',
+                                                                        'validate_purchasing_ap_head',
+                                                                        'validate_purchasing_cfo',
+                                                                        'validate_purchasing_confirmation',
+                                                                        'validate_auditor'
+                                                                        ))]}</attribute>
+        </xpath>    
+
+        <xpath expr="//sheet/div[@class='oe_button_box']/button[@name='action_view_picking']" position="attributes">
+          <attribute name="attrs">{'invisible': [('state','in',('draft',
+                                                                'sent',
+                                                                'to approve',
+                                                                'validate_purchasing_ceo',
+                                                                'validate_purchasing_qs',
+                                                                'validate_purchasing_head',
+                                                                'validate_logistic_head',
+                                                                'validate_purchasing_boq',
+                                                                'validate_purchasing_boq_head',
+                                                                'validate_purchasing_cost',
+                                                                'validate_accounting_staff_qs',
+                                                                'validate_purchasing_ap_head',
+                                                                'validate_purchasing_cfo',
+                                                                'validate_auditor',
+                                                                'validate_purchasing_confirmation'))]}</attribute>
+        </xpath>        
+
+
+        <xpath expr="//sheet/div[@class='oe_button_box']/button[@name='action_view_invoice']" position="attributes">
+          <attribute name="attrs">{'invisible': [('state','in',('draft',
+                                                                'sent',
+                                                                'to approve',
+                                                                'validate_purchasing_ceo',
+                                                                'validate_purchasing_qs',
+                                                                'validate_purchasing_head',
+                                                                'validate_logistic_head',
+                                                                'validate_purchasing_boq',
+                                                                'validate_purchasing_boq_head',
+                                                                'validate_purchasing_cost',
+                                                                'validate_accounting_staff_qs',
+                                                                'validate_purchasing_ap_head',
+                                                                'validate_purchasing_cfo',
+                                                                'validate_auditor',
+                                                                'validate_purchasing_confirmation'))]}</attribute>
+        </xpath>   
+
+        <!-- <xpath expr="//div/label[2]" position="after">
+          <label string="QS Purchasing" attrs="{'invisible': [('state','not in',('validate_purchasing_qs'))]}"/>
+          <label string="QS Purchasing" attrs="{'invisible': [('state','not in',('validate_purchasing_head'))]}"/>
+          <label string="QS Purchasing" attrs="{'invisible': [('state','not in',('validate_purchasing_head'))]}"/>
+        </xpath> -->
+
+        <!-- <page string="Deliveries &amp; Invoices">
+            <group>
+                <field name="has_special_items" invisible="1"/>
+            </group>
+        </page> -->
+        <!-- <xpath expr="//page[1]" position="after">
+            <page string="New Page Tab">
+              <group>
+                  <group>
+                      <label for="date_planned"/>
+                      <div>
+                          <field name="date_planned" required="1" attrs="{'readonly': [('state', 'not in', ('draft', 'sent'))]}"/>
+                          <button name="action_set_date_planned" type="object"
+                              states="draft,sent"
+                              string="Set date to all order lines"
+                              help="This changes the scheduled date of all order lines to the given date"
+                              class="fa fa-calendar o_icon_button oe_edit_only"/>
+                      </div>
+                      <field name="picking_type_id" domain="[('code','=','incoming')]" options="{'no_create': True}" groups="stock.group_stock_multi_locations"/>
+                      <field name="dest_address_id" groups="stock.group_stock_multi_locations" attrs="{'invisible': [('default_location_dest_id_usage', '!=', 'customer')], 'required': [('default_location_dest_id_usage', '=', 'customer')]}"/>
+                      <field name="default_location_dest_id_usage" invisible="1"/>
+                      <field name="incoterm_id"/>
+                  </group>
+                  <group>
+                      <field name="invoice_status"/>
+                      <field name="payment_term_id" options="{'no_open': True, 'no_create': True}" attrs="{'readonly': ['|', ('invoice_status','=', 'invoiced'), ('state', '=', 'done')]}"/>
+                      <field name="fiscal_position_id" options="{'no_create': True}" attrs="{'readonly': ['|', ('invoice_status','=', 'invoiced'), ('state', '=', 'done')]}"/>
+                      <field name="date_approve" groups="base.group_no_one"/>
+                  </group>
+              </group>
+          </page>
+       </xpath> -->
+
+
+<!--
+        <xpath expr="//notebook/page[1]/field[@name='order_line']/tree[1]/field[@name='price_unit']" position="attributes">
+          <attribute name="groups"> purchase.group_purchase_user,purchase.group_purchase_manager</attribute>
+        </xpath>                  
+-->
+
+       <page string="Deliveries &amp; Invoices">
+           <group>
+               <field name="move_to_acct_staff_qs" invisible="1"/>
+               <field name="move_to_acct_ap_head" invisible="1"/>
+
+               <field name="allow_to_approve_by_cfo" invisible="1"/>
+               <field name="allow_to_confirm_po" invisible="1"/>
+
+               <field name="allow_to_pocash_appov" invisible="1"/> <!-- CEO -->
+               <field name="allow_to_pocash_appov_loghead" invisible="1"/>
+               <field name="allow_to_pocash_appov_phead" invisible="1"/>
+               <field name="allow_to_pocash_appov_audit" invisible="1"/>
+
+
+               <field name="is_approved_by_cfo" string="Approve by CFO" invisible="1"/>
+               <field name="is_pocash_skip_to_ap_head" invisible="1"/>
+               <field name="is_pocash_apprv_ceo" invisible="1"/>
+
+               <field name="is_pocash_apprv_loghead" invisible="1"/>
+               <field name="is_pocash_apprv_purchasing_head" invisible="1"/>
+               <field name="is_pocash_apprv_auditor" invisible="1"/>
+               
+
+               
+           </group>
+       </page>
+
+
+       <field name="date_order" position="after">
+          <field name="project_location" invisible="0"/>
+          <field name="rof_ref_no" invisible="0"/>
+          <field name="has_multiple_rof" string="Multiple ROF" invisible="1"/>
+          <field name="rof_id" readonly="1" string="ROF Number" invisible="1"/>
+          <field name="project_id" readonly="1" string="Project" invisible="1"/>
+          <field name="area_id" readonly="1" string="ROF Area" invisible="1"/>
+          <field name="zone_id" readonly="1" string="ROF Zone" invisible="1"/>
+          <field name="daily_po_summary" attrs="{'readonly': [('state', 'not in', ['draft'])]}"/>
+          <field name="active" readonly="1" invisible="1"/>
+       </field>
+
+       <field name="requisition_id" position="after">
+          <field name="is_po_paid_by_cash" attrs="{'readonly': [('state', 'not in', ['draft'])]}"/>
+       </field>
+
+       
+      </field>
+    </record>
+
+    <record id="purchase.purchase_form_action" model="ir.actions.act_window">
+        <field name="domain">
+                              [('state','not in',('draft',
+                                                  'sent',
+                                                  'validate_purchasing_ceo',
+                                                  'validate_purchasing_qs',
+                                                  'validate_purchasing_head',
+                                                  'validate_logistic_head',
+                                                  'validate_purchasing_boq',
+                                                  'validate_purchasing_boq_head',
+                                                  'validate_purchasing_cost',
+                                                  'validate_accounting_staff_qs',
+                                                  'validate_purchasing_ap_head',
+                                                  'validate_purchasing_cfo',                                                  
+                                                  'validate_purchasing_confirmation',
+                                                  'validate_auditor',
+                                                  'confirmed'))]
+        <!--  [('state','in',('draft','sent','cancel', 'confirmed'))] -->
+        </field>
+    </record>    
+
+    <record id="purchase.purchase_rfq" model="ir.actions.act_window">
+        <field name="domain">
+                              [('state','in',('draft',
+                                                  'sent',
+                                                  'cancel',
+                                                  'validate_purchasing_ceo',
+                                                  'validate_purchasing_qs',
+                                                  'validate_purchasing_head',
+                                                  'validate_logistic_head',
+                                                  'validate_purchasing_boq',
+                                                  'validate_purchasing_boq_head',
+                                                  'validate_purchasing_cost',
+                                                  'validate_accounting_staff_qs',
+                                                  'validate_purchasing_ap_head',
+                                                  'validate_purchasing_cfo',
+                                                  'validate_purchasing_confirmation',
+                                                  'validate_auditor',
+                                                  'confirmed'))]
+        <!--  [('state','not in',('draft','sent', 'confirmed'))] -->
+        </field>
+    </record>    
+
+
+    <!-- <record id="view_purchase_order_kanban_extend" model="ir.ui.view">
+      <field name="name">purchase.order.kanban</field>
+      <field name="model">purchase.order</field>
+      <field name="inherit_id" ref="purchase.view_purchase_order_kanban"/>
+      <field name="arch" type="xml">
+        <xpath expr="//field[@name='state']" position="after">
+          <button name="Test" type="object" string="Testing" class="oe_highlight"/>
+        </xpath>
+      </field>
+    </record> -->
+  </data>
+</odoo>

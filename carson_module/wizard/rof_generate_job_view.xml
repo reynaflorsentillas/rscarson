@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<data>
+
+    <record id="carson_rof_generate_job_view" model="ir.ui.view">
+        <field name="name">carson.rof.generate.job.form</field>
+        <field name="model">carson.rof.generate.job</field>
+        <field name="arch" type="xml">
+            <form string="ROF Generate Job Order">
+                <group>
+                    <field name="rof_id" readonly="1" />
+                    <field name="item_ids" domain="[('rof_item_id','=',rof_id)]" required="1"/>
+                </group>
+                <footer>
+                    <button name="apply" string="Apply" type="object" default_focus="1" class="oe_highlight"/>
+                    or
+                    <button special="cancel" string="Cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- <record id="carson_rof_generate_job_action" model="ir.actions.act_window">
+        <field name="name">ROF Generate Job Order</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">carson.rof.generate.job</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="carson_rof_generate_job_view"/>
+        <field name="target">new</field>
+    </record> -->
+
+
+</data>
+</odoo>

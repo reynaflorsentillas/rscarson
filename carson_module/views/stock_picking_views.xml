@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="view_picking_form_extend" model="ir.ui.view">
+            <field name="name">stock.picking.form.extend</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.view_picking_form" />
+            <field name="arch" type="xml">
+
+                <xpath expr="//field[@name='move_line_ids']/tree/field[@name='product_uom_id']" position="replace">
+                    <field name="product_uom_id" force_save="1" readonly="1" groups="product.group_uom"/>
+                </xpath>
+
+                <xpath expr="//field[@name='move_line_ids']/tree/field[@name='product_uom_qty']" position="before">
+                    <field name="available_qty" readonly="1"/>
+                </xpath>
+
+                <xpath expr="//field[@name='move_lines']/tree/field[@name='product_id']" position="after">
+                    <field name="rof_id" required="1" options="{'no_quick_create':True,'no_create_edit':True,'no_open': True,}"/>
+                </xpath>
+
+                <xpath expr="//button[@name='action_cancel']" position="attributes">
+                    <attribute name="attrs">{'invisible': ['|', ('state', 'not in', ('assigned', 'confirmed', 'partially_available', 'draft', 'waiting','whchecked','pmapproved','picapproved','pscapproved','lhapproved',)), ('is_locked', '=', False)]}</attribute>
+                </xpath>
+
+                <xpath expr="//field[@name='priority']" position="after">
+                    <field name="is_return" groups="base.group_no_one" readonly="1"/>
+                    <field name="is_receive" groups="base.group_no_one"/>
+                    <field name="is_transit" groups="base.group_no_one"/>
+                    <field name="is_transit_main" groups="base.group_no_one"/>
+                    <field name="is_transit_site" groups="base.group_no_one"/>
+                    <field name="is_consume" groups="base.group_no_one"/>
+                    <field name="is_allow_validate" groups="base.group_no_one"/>
+                    <!-- APPROVAL -->
+                    <field name="is_picapproved" groups="base.group_no_one"/>
+                    <field name="is_psapproved" groups="base.group_no_one"/>
+                    <field name="is_pmapproved" groups="base.group_no_one"/>
+                    <field name="is_whchecked" groups="base.group_no_one"/>
+                    <field name="is_lhapproved" groups="base.group_no_one"/>
+                </xpath>
+
+                <xpath expr="//field[@name='origin']" position="after">
+                  <!-- <field name="carson_project_id" readonly="0" required="1" options="{'no_quick_create':True,'no_create_edit':True,'no_open': True,}" /> -->
+                  <field name="carson_project_id" readonly="0" options="{'no_quick_create':True,'no_create_edit':True,'no_open': True,}" required="context.get('planned_picking')"/>
+                  <field name="related_site_project_id" attrs="{'invisible': [('is_transit_site', '=', False)], 'required': [('is_transit_site', '=', True)]}"/>
+                  <!-- <field name="rof_ids" widget="many2many_tags" readonly="0" required="0" options="{'no_quick_create':True,'no_create_edit':True,'no_open': True,}"/> -->
+                  <field name="rof_id" options="{'no_quick_create':True,'no_create_edit':True,'no_open': True,}" attrs="{'readonly':[('state','not in',('draft','waiting'))]}"/>
+                </xpath>
+
+                <xpath expr="//button[@name='action_cancel']" position="before">
+                    <button name="update_esignature" type="object" string="UPDATE SIGNATURE" groups="base.group_no_one" class="btn-danger"/>
+                    <button name="button_validate_wh_super" attrs="{'invisible': [('is_allow_validate', '=', False)]}" string="Validate" groups="carson_module.group_warehouse_supervisor" type="object" class="oe_highlight"/>
+                    <button name="button_validate_log_head" attrs="{'invisible': [('is_allow_validate', '=', False)]}" string="Validate" groups="carson_module.group_logistics_head" type="object" class="oe_highlight"/>
+
+                    <button name="button_validate_pic" attrs="{'invisible': [('is_allow_validate', '=', False)]}" string="Validate" groups="carson_module.group_poc" type="object" class="oe_highlight" states="assigned"/>
+                    <button name="button_validate_pm" attrs="{'invisible': [('is_allow_validate', '=', False)]}" string="Validate" groups="carson_module.group_project_manager" type="object" class="oe_highlight"/>
+
+                    <button name="button_validate_ps" attrs="{'invisible': [('is_allow_validate', '=', False)]}" string="Validate" groups="carson_module.group_project_supervisor" type="object" class="oe_highlight"/>
+                </xpath>
+
+                <xpath expr="//button[@name='button_validate']" position="replace">
+                  <button name="button_validate" attrs="{'invisible': [('show_validate', '=', False)]}" string="Validate" groups="stock.group_stock_user" type="object" class="oe_highlight"/>
+                    <button name="button_validate"  string="Validate" groups="carson_module.group_purchasing_boq,carson_module.group_purchasing_qs,carson_module.group_op_manager,carson_module.group_site_warehouseman,carson_module.group_satellite_warehouseman,carson_module.group_production_user" type="object" class="oe_highlight" attrs="{'invisible': [('is_allow_validate', '!=', True)]}"/>
+                    <!-- <button name="button_validate"  string="Validate" groups="carson_module.group_warehouse_supervisor" type="object" class="oe_highlight" invisible="context.get('planned_picking')"/> -->
+
+                </xpath>
+
+            </field>
+        </record>
+
+
+        <!-- Change displayed states based on groups -->
+        <record id="view_stock_picking_state_transfer" model="ir.ui.view">
+            <field name="name">stock.picking.state.transfer</field>
+             <field name="model">stock.picking</field>
+             <field name="inherit_id" ref="stock.view_picking_form"></field>
+             <field name="groups_id" eval="[(6, 0, [ref('carson_module.group_warehouse_supervisor'),ref('carson_module.group_logistics_head')])]"/>
+             <field name="arch" type="xml">
+                <xpath expr="//field[@name='state']" position="attributes" >
+                  <attribute name="statusbar_visible">draft,confirmed,partially_available,assigned,whchecked,lhapproved,done</attribute>
+                </xpath>
+            </field>
+          </record>
+
+          <record id="view_stock_picking_state_return" model="ir.ui.view">
+            <field name="name">stock.picking.state.return</field>
+             <field name="model">stock.picking</field>
+             <field name="inherit_id" ref="stock.view_picking_form"></field>
+             <field name="groups_id" eval="[(6, 0, [ref('carson_module.group_project_manager'),ref('carson_module.group_op_manager')])]"/>
+             <field name="arch" type="xml">
+                <xpath expr="//field[@name='state']" position="attributes" >
+                  <attribute name="statusbar_visible">draft,confirmed,partially_available,assigned,pmapproved,done</attribute>
+                </xpath>
+            </field>
+          </record>
+
+          <record id="view_stock_picking_state_receive" model="ir.ui.view">
+            <field name="name">stock.picking.validate.receive</field>
+             <field name="model">stock.picking</field>
+             <field name="inherit_id" ref="stock.view_picking_form"></field>
+             <field name="groups_id" eval="[(6, 0, [ref('carson_module.group_site_warehouseman')])]"/>
+             <field name="arch" type="xml">
+                <xpath expr="//field[@name='state']" position="attributes" >
+                  <attribute name="statusbar_visible">draft,confirmed,partially_available,assigned,picapproved,pmapproved,whchecked,done</attribute>
+                </xpath>
+            </field>
+          </record>
+
+          <record id="view_stock_picking_state_satellite" model="ir.ui.view">
+            <field name="name">stock.picking.validate.satellite</field>
+             <field name="model">stock.picking</field>
+             <field name="inherit_id" ref="stock.view_picking_form"></field>
+             <field name="groups_id" eval="[(6, 0, [ref('carson_module.group_satellite_warehouseman'),ref('carson_module.group_poc')])]"/>
+             <field name="arch" type="xml">
+                <xpath expr="//field[@name='state']" position="attributes" >
+                  <attribute name="statusbar_visible">draft,confirmed,partially_available,assigned,picapproved,pmapproved,done</attribute>
+                </xpath>
+            </field>
+          </record>
+
+    </data>
+</odoo>

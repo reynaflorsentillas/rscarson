@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<data>
+
+    <record id="carson_rof_generate_production_view" model="ir.ui.view">
+        <field name="name">carson.rof.generate.production.form</field>
+        <field name="model">carson.rof.generate.production</field>
+        <field name="arch" type="xml">
+            <form string="ROF Generate Manufacturing Order">
+                <group>
+                    <group>
+
+                        <field name="rof_id" readonly="1" />
+                        <field name="item_id" required="1" domain="[('rof_item_id','=',rof_id),('to_manufacture','=',True)]" options="{'no_open': True,'no_create': True}"/>
+                        <field name="product_id" readonly="1" invisible="1"/>
+                        <field name="manufacture_qty" readonly="1" />
+                        <field name="product_uom" readonly="1" />
+                        <field name="bom_id" domain="['&amp;', '|',
+                                                        ('product_id','=',product_id),
+                                                        '&amp;',
+                                                            ('product_tmpl_id.product_variant_ids','=',product_id),
+                                                            ('product_id','=',False),
+                                                            ('type', '=', 'normal')]" options="{'no_open': True,'no_create': True}" required="1"/>
+                    </group>
+                    <group>
+                        <field name="picking_type_id" readonly="1" invisible="0"/>
+                        <field name="company_id" readonly="1" invisible="1"/>
+                        <field name="location_dest_id" readonly="1" invisible="0" />
+                    </group>
+                </group>
+                <footer>
+                    <button name="apply" string="Apply" type="object" default_focus="1" class="oe_highlight"/>
+                    or
+                    <button special="cancel" string="Cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</data>
+</odoo>

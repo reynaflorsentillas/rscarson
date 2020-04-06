@@ -1,0 +1,78 @@
+<odoo>
+	<data>  
+
+
+		<record model="ir.ui.view" id="view_carson_job_order">
+			<field name="name">Carson Job Order</field>
+			<field name="model">carson.job.order</field>   
+			<field name="arch" type="xml">
+				<form string="Job Order" create="false"> 
+					<header> 
+						<field name="state" widget="statusbar" />
+					</header>
+					<sheet>   
+						<div class="oe_title">   
+								 <h1>
+											<field name="name" />
+								</h1> 
+						</div> 
+						<br/>
+						<group>
+						 	<group>
+							 <field name="customer_id"  domain="[('customer','=',True)]" /> 
+							</group>
+							<group>
+								<field name="rof_id"/>
+							</group>
+						</group>  
+						<notebook>
+							<page string="Itmes">
+									<field name="line_ids">
+										<tree editable="bottom"> 
+											<field name="product_id" />   
+											<field name="location_id" readonly="1"/>
+											<field name="location_dest_id" readonly="1" /> 
+										</tree> 
+									</field>
+							</page>
+						</notebook>
+					</sheet>
+					<div class="oe_chatter">
+						<field name="message_follower_ids" widget="mail_followers" />
+						<field name="activity_ids" widget="mail_activity"/>
+						<field name="message_ids" widget="mail_thread" />
+					</div>
+				</form> 
+			</field>
+		</record>
+
+
+		<record model="ir.ui.view" id="view_tree_carson_job_order">
+			<field name="name">Carson Job Order</field>
+			<field name="model">carson.job.order</field>  
+			<field name="arch" type="xml">
+				<tree string='Carson Job Order'>
+					<field name="name"/>
+					 <field name="customer_id"/> 
+					 <field name="state"/> 
+					</tree>
+			</field>
+		</record>
+
+		<record model="ir.actions.act_window" id="carson_job_order_action">
+      <field name="name">Job Orders</field>
+      <field name="res_model">carson.job.order</field>
+      <field name="view_mode">tree,form</field>
+      <!-- <field name="search_view_id" ref="asiaglobal_service_report_search"/> -->
+      <field name="help" type="html">
+        <p>
+          Create a job order.
+        </p>
+      </field>
+    </record>
+
+	</data>
+</odoo>
+
+ 
+

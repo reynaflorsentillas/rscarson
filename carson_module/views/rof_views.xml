@@ -1,0 +1,555 @@
+<odoo>
+  <data>
+    <!-- Form and tree views -->
+    <record model="ir.ui.view" id="view_form_rof">
+      <field name="name">Requisition Order Form</field>
+      <field name="model">carson.rof</field>
+      <field name="priority" eval="15"/>
+      <field name="arch" type="xml">
+        <form string="Requisition Order Form" create="false">
+          <header>
+            <button name="action_check_availability" string="Check Availability" type="object" groups="base.group_no_one" />
+              <button name="action_check_availability" string="Check Availability" type="object" groups="carson_module.group_warehouse_supervisor" attrs="{'invisible':['|',('rof_state','not in',['qsvalidated','omapproved','whmchecked','whchecked','inprogress'])]}"/>
+              <button name="action_check_availability" string="Check Availability" type="object" groups="carson_module.group_main_warehouseman,carson_module.group_warehouse_supervisor" attrs="{'invisible':['|',('rof_state','not in',['qsvalidated','omapproved','inprogress'])]}"/>
+              <button name="action_check_availability" string="Check Availability" type="object" groups="carson_module.group_main_warehouseman,carson_module.group_warehouse_supervisor" attrs="{'invisible':['|',('rof_state','not in',['draft','inprogress']),('rof_type','!=','main')]}"/>
+
+              <button name="action_rof_submit"  string="Submit To Site" type="object"
+              groups="carson_module.group_satellite_warehouseman" class="btn-primary" attrs="{'invisible':['|',('rof_state','!=','draft'),('rof_type','!=','satellite')]}" />
+
+              <button name="action_rof_req_purchase_approve" string="Request Approval" type="object" groups="carson_module.group_main_warehouseman" attrs="{'invisible':['|',('has_for_purchase','!=',True),('rof_state','not in',['qsvalidated','omapproved'])]}"/>
+              <button name="action_rof_req_purchase_approve" string="Request Purchase" type="object" groups="carson_module.group_production_user" attrs="{'invisible':[('rof_state','not in',['inprogress','pmapproved'])]}"/>
+
+             <button name="action_rof_req_approve"  string="Request Approval" type="object"
+              groups="carson_module.group_manager,carson_module.group_site_qs,carson_module.group_site_warehouseman,carson_module.group_main_warehouseman,carson_module.group_production_user" class="btn-primary" attrs="{'invisible':['|',('rof_state','!=','draft')]}" />
+              <button name="action_rof_req_approve"  string="Request Approval" type="object"
+              groups="carson_module.group_site_warehouseman" class="btn-primary" attrs="{'invisible':['|',('rof_state','!=','submit')]}" />
+
+               <button name="action_rof_req_approve_override"  string="Override" type="object"
+              groups="carson_module.group_can_override" class="btn-danger" attrs="{'invisible':['|',('rof_state','!=','draft')]}" />
+
+
+              <button name="action_open_pin_verification"  string="Accept with PIN" type="object"
+              groups="carson_module.group_can_override" class="btn-danger" attrs="{'invisible':[('rof_state','not in',['draft','pending','picapproved','pmapproved'])]}" />
+
+             <button name="action_rof_accept" string="Accept" type="object" class="btn-success"
+              groups="carson_module.group_manager,carson_module.group_poc,carson_module.group_project_manager,carson_module.group_warehouse_supervisor,carson_module.group_op_manager,carson_module.group_logistics_head,carson_module.group_production_manager" />
+             <button name="action_rof_reject" string="Reject" type="object" class="btn-danger"
+               groups="carson_module.group_manager,carson_module.group_poc,carson_module.group_project_manager,carson_module.group_warehouse_supervisor,carson_module.group_op_manager,carson_module.group_logistics_head,carson_module.group_production_manager" />
+
+             <button name="action_rof_cancel"  string="Cancel" type="object"
+              groups="carson_module.group_manager,carson_module.group_site_qs,carson_module.group_site_warehouseman,carson_module.group_satellite_warehouseman" attrs="{'invisible':[('is_cancel_visible','!=',True)]}"/>
+              <button name="action_rof_cancel"  string="Cancel" type="object"
+              groups="carson_module.group_manager,carson_module.group_main_warehouseman" attrs="{'invisible':['|',('is_cancel_visible','!=',True),('rof_type','!=','main')]}"/>
+
+             <button name="action_generate_mtf" string="Generate MTF" type="object" class="btn-primary"  groups="carson_module.group_main_warehouseman" attrs="{'invisible':[('rof_state','not in',('qsvalidated','omapproved','inprogress','whmchecked','whchecked'))]}" />
+             <button name="action_add_mtf" string="Add To MTF" type="object" class="btn-primary"  groups="carson_module.group_main_warehouseman" attrs="{'invisible':[('rof_state','not in',('qsvalidated','omapproved','inprogress','whmchecked','whchecked'))]}" />
+
+             <!--<button name="action_generate_purchase" string="Generate Purchase Order" type="object" class="btn-primary"  groups="carson_module.group_purchasing_staff" attrs="{'invisible':[('rof_state','in',('done','cancelled'))]}"/> -->
+             <button name="action_generate_purchase" string="Generate Purchase Order" type="object" class="btn-primary" groups="carson_module.group_purchasing_staff" attrs="{'invisible':[('allow_to_view_gen_po','!=',True)]}"/>
+             <button name="action_add_purchase" string="Add To Purchase Order" type="object" class="btn-primary" groups="carson_module.group_purchasing_staff" attrs="{'invisible':[('allow_to_view_gen_po','!=',True)]}"/>
+
+             <button name="action_generate_jo" string="Generate Job Order" type="object" class="btn-primary"  groups="carson_module.group_manager" attrs="{'invisible':[('rof_state','in',('done','cancelled'))]}"/>
+
+             <button name="action_rof_req_production" string="Request Production" type="object" groups="carson_module.group_main_warehouseman" attrs="{'invisible':['|',('has_for_production','!=',True),('production_requested','=',True)]}"/>
+             <button name="action_generate_production" string="Generate Manufacturing Order" type="object" class="btn-primary"  groups="carson_module.group_production_user,carson_module.group_production_manager" attrs="{'invisible':[('rof_state','not in',('whmchecked','whchecked','inprogress'))]}" />
+
+             <button name="action_update_purchase" string="UPDATE PURCHASE" type="object" class="btn-danger" groups="base.group_no_one" />
+
+            <field name="rof_state" widget="statusbar" />
+          </header>
+          <sheet>
+            <div class="oe_title">
+                 <h1>
+                      <field name="name"  readonly="1"/>
+                </h1>
+            </div>
+            <br/>
+            <group>
+             <group>
+                <field name="carson_project_id" required="1" options="{'no_quick_create':True,'no_create_edit':True,'no_open': True,}" attrs="{'readonly': [('rof_state', 'in', ('done','cancelled'))]}"/>
+                <field name="requested_date" readonly="1" />
+                <field name="area_id" widget="selection" attrs="{'readonly': [('rof_state', 'in', ('done','cancelled'))]}"/>
+                <field name="area" invisible="1"/>
+                <field name="zone_id" widget="selection" attrs="{'readonly': [('rof_state', 'in', ('done','cancelled'))]}"/>
+                <field name="site_rof_id" attrs="{'invisible': [('rof_type', '!=', 'production')]}"/>
+             </group>
+             <group>
+                <field name="rof_type"/>
+                <field name="is_production_request" invisible="0"/>
+                <field name="project_id"  domain="[('is_company','=',True),('customer','=',True)]" />
+                <field name="location_id" domain="[('usage','=','internal')]" attrs="{'readonly': [('rof_state', 'in', ('done','cancelled'))]}"/>
+                <field name="package_no" attrs="{'readonly': [('rof_state', 'in', ('done','cancelled'))]}"/>
+             </group>
+           </group>
+           <notebook>
+              <page string="Items">
+                    <field name="rof_items" mode="tree,kanban" domain="[]" attrs="{'readonly': [('rof_state', 'in', ('done','cancelled'))]}">
+                                 <tree editable="bottom" decoration-danger="ordered_qty&gt;available_qty and is_checked_available_qty==True and ordered_qty&gt;delivered_qty and reserved_qty == 0" decoration-success="state == 'available' and is_checked_available_qty==True" decoration-muted="state == 'cancelled'">
+                                    <field name="product_id" required="1" domain="[]" attrs="{'readonly': [('state', 'in', ('delivered','satellite','consumed'))]}" options="{'no_quick_create':True}"/>
+                                    <field name="name" readonly="1"  />
+                                    <field name="name" invisible="1"  />
+                                    <field name="location_id" domain="[('usage','=','internal')]" attrs="{'required': [('parent.rof_state', 'in', ('qsvalidated','whmchecked','whchecked','inprogress'))], 'readonly': [('state', 'in', ('delivered','satellite','consumed'))]}" />
+                                    <field name="ordered_qty" string="Requested Qty" attrs="{'readonly': [('state', 'in', ('delivered','satellite','consumed'))]}" />
+                                    <field name="product_uom" attrs="{'readonly': [('state', 'in', ('delivered','satellite','consumed'))]}" />
+                                    <field name="is_checked_available_qty" invisible="1"/>
+                                    <field name="available_qty" groups="carson_module.group_main_warehouseman" readonly="1"/>
+                                    <field name="delivered_qty" groups="carson_module.group_main_warehouseman" />
+                                    <field name="reserved_qty" groups="carson_module.group_main_warehouseman" />
+                                    <field name="satellite_qty" groups="base.group_no_one" />
+                                    <field name="consumed_qty" groups="base.group_no_one" />
+                                    <field name="purchase_qty" groups="carson_module.group_main_warehouseman,carson_module.group_purchasing_staff" />
+                                    <field name="manufacture_qty" groups="carson_module.group_main_warehouseman,carson_module.group_production_user" />
+                                    <field name="to_manufacture" groups="carson_module.group_main_warehouseman,carson_module.group_production_user,carson_module.group_site_qs" attrs="{'readonly': [('parent.rof_type', '=', 'production')]}"/>
+                                    <field name="note" />
+                                    <field name="state" />
+                                </tree>
+                      </field>
+                </page>
+
+              <page string="Material Transmittals">
+                      <field name="mtf_items" mode="tree,form" attrs="{'readonly': [('rof_state', 'in', ('done','cancelled'))]}">
+                                 <tree >
+                                    <field name="name" />
+                                    <field name="product_id" required="1" domain="[]" />
+                                    <field name="location_id"/>
+                                    <field name="location_dest_id"/>
+                                    <field name="scheduled_date" />
+                                    <field name="state" />
+                                </tree>
+                      </field>
+              </page>
+
+
+
+              <page string="Purchase Orders">
+                <field name="po_items" mode="tree,form" attrs="{'readonly': [('rof_state', 'in', ('done','cancelled'))]}" invisible="1">
+                  <tree>
+                    <field name="name" />
+                    <field name="product_id" required="1" domain="[]" />
+                    <field name="date_order" />
+                    <field name="state" />
+                  </tree>
+                </field>
+
+                <field name="po_item_ids" mode="tree,form" attrs="{'readonly': [('rof_state', 'in', ('done','cancelled'))]}">
+                  <tree>
+                    <field name="name" />
+                    <field name="product_id" required="1" domain="[]" />
+                    <field name="date_order" />
+                    <field name="state" />
+                  </tree>
+                </field>
+              </page>
+
+              <page string="Job Orders">
+                <field name="jo_ids" mode="tree,form" attrs="{'readonly': [('rof_state', 'in', ('done','cancelled'))]}">
+                  <tree>
+                    <field name="name"/>
+                    <!-- <field name="product_id"/> -->
+                    <field name="customer_id"/>
+                    <field name="state"/>
+                  </tree>
+                </field>
+              </page>
+
+              <page string="Manufacturing Orders">
+                <field name="production_ids" readonly="1">
+                  <tree>
+                    <field name="name"/>
+                    <field name="product_id"/>
+                    <field name="product_qty"/>
+                    <field name="product_uom_id"/>
+                    <field name="availability"/>
+                    <field name="origin"/>
+                    <field name="state"/>
+                  </tree>
+                </field>
+              </page>
+
+              <page string="Other Info">
+                <group>
+                  <group>
+                    <!-- <field name="picking_type_id"/> -->
+                    <field name="warehouse_id" required="1" attrs="{'readonly': [('rof_state', 'in', ('done','cancelled'))]}"/>
+                  </group>
+                  <group>
+                    <field name="has_for_purchase" groups="base.group_no_one" />
+                    <field name="has_for_production" groups="base.group_no_one" />
+                    <field name="production_requested" groups="base.group_no_one" />
+                    <field name="is_cancel_visible" groups="base.group_no_one" />
+                    <field name="has_special_items" groups="base.group_no_one" />
+                    <field name="for_wh_check" groups="base.group_no_one" />
+                    <field name="is_submitted" groups="base.group_no_one" />
+                    <field name="is_pending" groups="base.group_no_one" />
+                    <field name="is_picapproved" groups="base.group_no_one" />
+                    <field name="is_pmapproved" groups="base.group_no_one" />
+                    <field name="is_omapproved" groups="base.group_no_one" />
+                    <field name="is_qsvalidated" groups="base.group_no_one" />
+                    <field name="is_whmchecked" groups="base.group_no_one" />
+                    <field name="is_whchecked" groups="base.group_no_one" />
+                    <field name="is_inprogress" groups="base.group_no_one" />
+                    <field name="is_done" groups="base.group_no_one" />
+                    <field name="is_rejected" groups="base.group_no_one" />
+                    <field name="is_cancelled" groups="base.group_no_one" />
+                    <field name="allow_to_view_gen_po" groups="base.group_no_one" />
+                    <!-- <field name="is_allow_edit" groups="base.group_no_one" /> -->
+                   
+                  </group>
+                </group>
+              </page>
+
+<!--
+              <page string="Signatures">
+                      <field name="e_signature" mode="tree,form">
+                                 <tree >
+                                    <field name="ref_id" />
+                                    <field name="date_signed" />
+                                    <field name="user_id" />
+                                </tree>
+                      </field>
+              </page>
+-->
+            </notebook>
+
+          </sheet>
+        </form>
+      </field>
+    </record>
+
+    <record model="ir.ui.view" id="view_tree_rof">
+      <field name="name">Requisition Order List</field>
+      <field name="model">carson.rof</field>
+      <field name="arch" type="xml">
+        <tree string='Requisition Order List'>
+          <field name="name"/>
+           <field name="rof_user_name"  />
+           <field name="project_id"  />
+           <field name="requested_date"  />
+           <field name="rof_type"/>
+           <field name="rof_state" string="State" />
+          </tree>
+      </field>
+    </record>
+
+    <record model="ir.ui.view" id="rof_kanban">
+            <field name="name">carson.rof.kanban</field>
+            <field name="model">carson.rof</field>
+            <field name="arch" type="xml">
+                <kanban class="o_kanban_mobile">
+                    <field name="name"/>
+                    <field name="project_id"/>
+                    <field name="location_id"/>
+                    <field name="rof_state"/>
+                    <field name="requested_date"/>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div t-attf-class="oe_kanban_card oe_kanban_global_click">
+                                <div class="o_kanban_record_top mb8">
+                                    <div class="o_kanban_record_headings">
+                                        <strong class="o_kanban_record_title"><span><t t-esc="record.name.value"/></span></strong>
+                                    </div>
+                                    <strong>
+                                            <field name="rof_state" widget="label_selection" options="{'classes': {'draft': 'default', 'cancelled': 'danger', 'pending': 'warning', 'picapproved': 'warning', 'pmapproved': 'warning', 'omapproved': 'warning', 'qsvalidated': 'warning', 'whmchecked': 'warning', 'whchecked': 'warning', 'inprogress': 'warning', 'done': 'success'}}"/>
+                                    </strong>
+                                </div>
+                                <div class="o_kanban_record_bottom">
+                                    <div class="oe_kanban_bottom_left">
+                                        <t t-esc="record.project_id.value"/>
+                                    </div>
+                                    <div class="oe_kanban_bottom_right">
+                                        <t t-esc="record.requested_date.value and record.requested_date.value.split(' ')[0] or False"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+    <record id="view_rof_custome_chatter" model="ir.ui.view">
+            <field name="name">carson.rof.custom.chatter</field>
+             <field name="model">carson.rof</field>
+             <field name="inherit_id" ref="carson_module.view_form_rof"></field>
+             <field name="arch" type="xml">
+              <sheet position="after">
+                <div class="oe_chatter">
+                  <field name="message_follower_ids" widget="mail_followers" />
+                  <field name="activity_ids" widget="mail_activity"/>
+                  <field name="message_ids" widget="mail_thread" />
+                </div>
+              </sheet>
+             </field>
+     </record>
+
+     <!-- Accept/Reject button visibility functions based on status -->
+     <!-- Project in charge -->
+
+     <record id="view_carson_accept_poc" model="ir.ui.view">
+            <field name="name">carson.rof.accept.reject.custom.poc</field>
+             <field name="model">carson.rof</field>
+             <field name="inherit_id" ref="carson_module.view_form_rof"></field>
+             <field name="groups_id" eval="[(6, 0, [ref('carson_module.group_poc')])]"/>
+             <field name="arch" type="xml">
+             <xpath expr="//button[@name='action_rof_accept']" position="attributes" >
+                <attribute name="attrs">{'invisible':['|',('rof_state','!=','pending')]}</attribute>
+                  </xpath>
+             <xpath expr="//button[@name='action_rof_reject']" position="attributes" >
+                  <attribute name="attrs">{'invisible':['|',('rof_state','!=','pending')]}</attribute>
+                  </xpath>
+            </field>
+          </record>
+
+    			<!-- Project Manager -->
+
+   				<record id="view_carson_accept_pm" model="ir.ui.view">
+            <field name="name">carson.rof.accept.reject.custom.pm</field>
+             <field name="model">carson.rof</field>
+             <field name="inherit_id" ref="carson_module.view_form_rof"></field>
+             <field name="groups_id" eval="[(6, 0, [ref('carson_module.group_project_manager')])]"/>
+             <field name="arch" type="xml">
+             <xpath expr="//button[@name='action_rof_accept']" position="attributes" >
+                <attribute name="attrs">{'invisible':['|',('rof_state','!=','picapproved')]}</attribute>
+                  </xpath>
+             <xpath expr="//button[@name='action_rof_reject']" position="attributes" >
+                  <attribute name="attrs">{'invisible':['|',('rof_state','!=','picapproved')]}</attribute>
+                  </xpath>
+            </field>
+          </record>
+
+    			<!-- Operations Manager -->
+
+   				<record id="view_carson_accept_opm" model="ir.ui.view">
+            <field name="name">carson.rof.accept.reject.custom.opm</field>
+             <field name="model">carson.rof</field>
+             <field name="inherit_id" ref="carson_module.view_form_rof"></field>
+             <field name="groups_id" eval="[(6, 0, [ref('carson_module.group_op_manager')])]"/>
+             <field name="arch" type="xml">
+             <xpath expr="//button[@name='action_rof_accept']" position="attributes" >
+                <attribute name="attrs">{'invisible':['|',('rof_state','!=','pmapproved')]}</attribute>
+                  </xpath>
+             <xpath expr="//button[@name='action_rof_reject']" position="attributes" >
+                  <attribute name="attrs">{'invisible':['|',('rof_state','!=','pmapproved')]}</attribute>
+                  </xpath>
+            </field>
+          </record>
+
+          <!-- QS Supervisor -->
+          <!-- <record id="view_carson_accept_qs" model="ir.ui.view">
+            <field name="name">carson.rof.accept.reject.custom.qs</field>
+             <field name="model">carson.rof</field>
+             <field name="inherit_id" ref="carson_module.view_form_rof"></field>
+             <field name="groups_id" eval="[(6, 0, [ref('carson_module.group_qs_supervisor')])]"/>
+             <field name="arch" type="xml">
+             <xpath expr="//button[@name='action_rof_accept']" position="attributes" >
+                <attribute name="attrs">{'invisible':[('is_qsvalidated','=',True)]}</attribute>
+                  </xpath>
+             <xpath expr="//button[@name='action_rof_reject']" position="attributes" >
+                  <attribute name="attrs">{'invisible':[('is_qsvalidated','=',True)]}</attribute>
+                  </xpath>
+            </field>
+          </record> -->
+
+          <!-- Purchasing QS -->
+          <!-- <record id="view_carson_accept_purchasing_qs" model="ir.ui.view">
+            <field name="name">carson.rof.accept.reject.custom.purchasing.qs</field>
+             <field name="model">carson.rof</field>
+             <field name="inherit_id" ref="carson_module.view_form_rof"></field>
+             <field name="groups_id" eval="[(6, 0, [ref('carson_module.group_purchasing_qs')])]"/>
+             <field name="arch" type="xml">
+             <xpath expr="//button[@name='action_rof_accept']" position="attributes" >
+                <attribute name="attrs">{'invisible':['|',('rof_state','!=','omapproved'),('has_special_items','=',False)]}</attribute>
+                  </xpath>
+             <xpath expr="//button[@name='action_rof_reject']" position="attributes" >
+                  <attribute name="attrs">{'invisible':['|',('rof_state','!=','omapproved'),('has_special_items','=',False)]}</attribute>
+                  </xpath>
+            </field>
+          </record> -->
+
+          <!-- Site QS -->
+          <!-- <record id="view_carson_accept_site_qs" model="ir.ui.view">
+            <field name="name">carson.rof.accept.reject.custom.site.qs</field>
+             <field name="model">carson.rof</field>
+             <field name="inherit_id" ref="carson_module.view_form_rof"></field>
+             <field name="groups_id" eval="[(6, 0, [ref('carson_module.group_site_qs')])]"/>
+             <field name="arch" type="xml">
+             <xpath expr="//button[@name='action_rof_accept']" position="attributes" >
+                <attribute name="attrs">{'invisible':['|',('rof_state','!=','omapproved'),('has_special_items','=',True)]}</attribute>
+                  </xpath>
+             <xpath expr="//button[@name='action_rof_reject']" position="attributes" >
+                  <attribute name="attrs">{'invisible':['|',('rof_state','!=','omapproved'),('has_special_items','=',True)]}</attribute>
+                  </xpath>
+            </field>
+          </record> -->
+
+
+          <!-- Warehouseman -->
+          <!-- <record id="view_carson_accept_qs" model="ir.ui.view">
+            <field name="name">carson.rof.accept.reject.custom.qs</field>
+             <field name="model">carson.rof</field>
+             <field name="inherit_id" ref="carson_module.view_form_rof"></field>
+             <field name="groups_id" eval="[(6, 0, [ref('carson_module.group_main_warehouseman')])]"/>
+             <field name="arch" type="xml">
+              <xpath expr="//button[@name='action_rof_accept']" position="attributes" >
+                <attribute name="attrs">{'invisible':[('for_wh_check','=',False)]}</attribute>
+              </xpath>
+              <xpath expr="//button[@name='action_rof_reject']" position="attributes" >
+                <attribute name="attrs">{'invisible':[('for_wh_check','=',False)]}</attribute>
+              </xpath>
+            </field>
+          </record> -->
+
+           <!-- Warehouse Supervisor -->
+
+          <record id="view_carson_accept_wh_sp" model="ir.ui.view">
+            <field name="name">carson.rof.accept.reject.custom.wh.sp</field>
+             <field name="model">carson.rof</field>
+             <field name="inherit_id" ref="carson_module.view_form_rof"></field>
+             <field name="groups_id" eval="[(6, 0, [ref('carson_module.group_warehouse_supervisor')])]"/>
+             <field name="arch" type="xml">
+                <xpath expr="//button[@name='action_rof_accept']" position="attributes" >
+                  <!-- <attribute name="attrs">{'invisible':[('for_wh_check','=',False)]}</attribute> -->
+                  <attribute name="attrs">{'invisible':['|',('rof_state','!=','whmchecked')]}</attribute>
+                  <attribute name="string">Verify</attribute>
+                </xpath>
+                <xpath expr="//button[@name='action_rof_reject']" position="attributes" >
+                  <!-- <attribute name="attrs">{'invisible':[('for_wh_check','=',False)]}</attribute> -->
+                  <attribute name="attrs">{'invisible':['|',('rof_state','!=','whmchecked')]}</attribute>
+                </xpath>
+            </field>
+          </record>
+
+          <!-- Logistic Head -->
+
+           <record id="view_carson_accept_lh" model="ir.ui.view">
+            <field name="name">carson.rof.accept.reject.custom.lh</field>
+             <field name="model">carson.rof</field>
+             <field name="inherit_id" ref="carson_module.view_form_rof"></field>
+             <field name="groups_id" eval="[(6, 0, [ref('carson_module.group_logistics_head')])]"/>
+             <field name="arch" type="xml">
+                <xpath expr="//button[@name='action_rof_accept']" position="attributes" >
+                  <attribute name="attrs">{'invisible':['|',('rof_state','!=','whchecked')]}</attribute>
+                  <attribute name="string">Verify</attribute>
+                </xpath>
+                <xpath expr="//button[@name='action_rof_reject']" position="attributes" >
+                  <attribute name="attrs">{'invisible':['|',('rof_state','!=','whchecked')]}</attribute>
+                </xpath>
+            </field>
+          </record>
+
+          <!-- Production Manager -->
+          <record id="view_carson_accept_prod_manager" model="ir.ui.view">
+            <field name="name">carson.rof.accept.reject.custom.prod.manager</field>
+             <field name="model">carson.rof</field>
+             <field name="inherit_id" ref="carson_module.view_form_rof"></field>
+             <field name="groups_id" eval="[(6, 0, [ref('carson_module.group_production_manager')])]"/>
+             <field name="arch" type="xml">
+             <xpath expr="//button[@name='action_rof_accept']" position="attributes" >
+                <attribute name="attrs">{'invisible':['|',('rof_state','!=','pending')]}</attribute>
+                  </xpath>
+             <xpath expr="//button[@name='action_rof_reject']" position="attributes" >
+                  <attribute name="attrs">{'invisible':['|',('rof_state','!=','pending')]}</attribute>
+                  </xpath>
+            </field>
+          </record>
+
+        <!-- ROF REPORT -->
+        <record model="ir.ui.view" id="view_tree_rof_items">
+          <field name="name">carson.rof.items.tree</field>
+          <field name="model">carson.rof.items</field>
+          <field name="arch" type="xml">
+            <tree string="Requisition Order Items" create="0" edit="0" delete="0">
+              <field name="product_id"/>
+               <field name="rof_item_id"  />
+               <field name="name"  />
+               <field name="ordered_qty" sum="Total Ordered Qty"/>
+               <field name="state" />
+            </tree>
+          </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_form_rof_items">
+          <field name="name">carson.rof.items.form</field>
+          <field name="model">carson.rof.items</field>
+          <field name="arch" type="xml">
+            <form string="Requisition Order Items">
+              <group>
+                <group>
+                  <field name="product_id"/>
+                  <field name="name"  />
+                  <field name="ordered_qty"/>
+                  <field name="product_uom"/>
+                </group>
+                <group>
+                  <field name="rof_item_id"/>
+                  <field name="state"/>
+                  <field name="note"/>
+                </group>
+              </group>
+              <group>
+                <field name="move_lines"/>
+              </group>
+              <group>
+                <field name="production_ids">
+                  <tree>
+                    <field name="name"/>
+                    <field name="product_id"/>
+                    <field name="product_qty"/>
+                    <field name="product_uom_id"/>
+                    <field name="availability"/>
+                    <field name="origin"/>
+                    <field name="state"/>
+                  </tree>
+
+                </field>
+              </group>
+            </form>
+
+          </field>
+        </record>
+
+        <record model="ir.ui.view" id="rof_items_kanban">
+            <field name="name">carson.rof..items.kanban</field>
+            <field name="model">carson.rof.items</field>
+            <field name="arch" type="xml">
+                <kanban class="o_kanban_mobile">
+                    <field name="name"/>
+                    <field name="ordered_qty"/>
+                    <field name="product_uom"/>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div t-attf-class="oe_kanban_card oe_kanban_global_click">
+                                <div class="o_kanban_record_top mb8">
+                                    <div class="o_kanban_record_headings">
+                                        <strong class="o_kanban_record_title"><span><t t-esc="record.name.value"/></span></strong>
+                                    </div>
+                                    <strong>
+                                            <field name="state" widget="label_selection" options="{'classes': {'draft': 'default', 'cancelled': 'danger', 'partial': 'warning', 'approval': 'warning', 'purchase': 'warning', 'available': 'success', 'delivered': 'success', 'satellite': 'success', 'consumed': 'success', 'done': 'success'}}"/>
+                                    </strong>
+                                </div>
+                                <div class="o_kanban_record_bottom">
+                                    <div class="oe_kanban_bottom_left">
+                                        <t t-esc="record.ordered_qty.value"/> <t t-esc="record.product_uom.value"/> 
+                                    </div>
+                                    <div class="oe_kanban_bottom_right">
+                                        <!-- <t t-esc="record.requested_date.value and record.requested_date.value.split(' ')[0] or False"/> -->
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="rof_item_report">
+          <field name="name">Item Requisition Report</field>
+          <field name="res_model">carson.rof.items</field>
+          <field name="view_type">form</field>
+          <field name="view_mode">tree,form</field>
+          <field name="context">{'group_by': ['product_id', 'rof_item_id']}</field>
+          <field name="help">This analysis gives you a fast overview on the requisition orders of your products.</field>
+        </record>
+
+  </data>
+</odoo>

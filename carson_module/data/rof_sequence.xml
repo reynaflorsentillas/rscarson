@@ -1,0 +1,37 @@
+<odoo>
+    <data noupdate="1">
+        <record id="seq_carson_rof" model="ir.sequence">
+            <field name="name">rof_sequencer</field>
+            <field name="code">carson.rof</field>
+            <field name="prefix">ROF</field>
+            <field name="padding">5</field>
+        </record>
+
+        <record id="seq_carson_jo" model="ir.sequence">
+            <field name="name">Carson Job Order</field>
+            <field name="code">carson.jo</field>
+            <field name="prefix">JO</field>
+            <field name="padding">5</field>
+        </record>
+
+        <record id="seq_daily_purchase_summary_report" model="ir.sequence">
+            <field name="name">Daily Purchase Summary</field>
+            <field name="code">daily.purchase.summary.report</field>
+            <field name="prefix">RSC-%(year)s-%(month)s%(day)s-</field>
+            <field name="padding">2</field>
+
+        </record>                
+    </data>
+
+
+    <data noupdate="1">
+        <record id="seq_cash_transaction_report" model="ir.sequence">
+            <field name="name">Purchase Cash Transaction Report Sequence</field>
+            <field name="code">purchase.order.cash.transaction.report</field>
+            <field name="prefix">%(y)s-%(month)s%(day)s-</field>
+            <field name="padding">2</field>
+            <!--
+            <field name="use_date_range" eval="False"/>-->
+        </record>      
+    </data>    
+</odoo>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+
+		<record id="mrp_production_form_view_extend" model="ir.ui.view">
+			<field name="name">mrp.production.rof.extend</field>
+			<field name="model">mrp.production</field>
+			<field name="inherit_id" ref="mrp.mrp_production_form_view" />
+			<field name="arch" type="xml">
+				<xpath expr="//field[@name='bom_id']" position="after">
+					<field name="carson_project_id" options="{'no_open':True,'no_create':True}"/>
+					<field name="rof_id" options="{'no_open':True,'no_create':True}"/>
+					<field name="rof_item_id" options="{'no_open':True,'no_create':True}" invisible="1"/>
+				</xpath>
+			</field>
+		</record>
+
+		<record id="mrp_bom_form_view_extend" model="ir.ui.view">
+			<field name="name">mrp.bom.form.extend</field>
+			<field name="model">mrp.bom</field>
+			<field name="inherit_id" ref="mrp.mrp_bom_form_view" />
+			<field name="arch" type="xml">
+				<xpath expr="//field[@name='routing_id']" position="after">
+					<field name="carson_project_id" options="{'no_open':True,'no_create':True}"/>
+					<field name="area_id" options="{'no_open':True,'no_create':True}"/>
+					<field name="zone_id" options="{'no_open':True,'no_create':True}"/>
+				</xpath>
+			</field>
+		</record>
+
+		<record id="mrp_bom_tree_view_extend" model="ir.ui.view">
+			<field name="name">mrp.bom.tree.extend</field>
+			<field name="model">mrp.bom</field>
+			<field name="inherit_id" ref="mrp.mrp_bom_tree_view" />
+			<field name="arch" type="xml">
+				<xpath expr="//field[@name='code']" position="after">
+					<field name="carson_project_id" options="{'no_open':True,'no_create':True}"/>
+					<field name="area_id" options="{'no_open':True,'no_create':True}"/>
+					<field name="zone_id" options="{'no_open':True,'no_create':True}"/>
+				</xpath>
+			</field>
+		</record>
+
+	</data>
+</odoo>

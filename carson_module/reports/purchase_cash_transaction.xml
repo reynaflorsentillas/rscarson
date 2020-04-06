@@ -1,0 +1,283 @@
+<odoo>
+		<data>
+
+			<!-- External Layout -->
+			<template id="external_layout_shoot_to_print_po_rpt">
+					<t t-if="not o and doc">
+							<t t-set="o" t-value="doc"/>
+					</t>
+
+					<t t-if="o and 'company_id' in o">
+							<t t-set="company" t-value="o.company_id.sudo()"/>
+					</t>
+
+					<t t-if="not o or not 'company_id' in o">
+							<t t-set="company" t-value="res_company"/>
+					</t>
+
+					<t t-call="carson_module.external_shoot_to_print_po"><t t-raw="0"/></t>
+			</template>
+
+			<template id="external_shoot_to_print_po">
+					<div class="article o_report_layout_standard">
+							<t t-raw="0" />
+					</div>
+					<div class="footer">
+						<div class="text-center text-muted">
+								<span t-field="o.name"/> | Page <span class="page"/> of <span class="topage"/>
+						</div>
+					</div>
+			</template>   
+			<!-- Purchase Order -->
+			<report
+			id="rpt_po_cash_transaction_act"
+			model="purchase.order"
+			string="PO Cash Transaction"
+			report_type="qweb-pdf"
+			name="carson_module.rpt_po_cash_transaction"
+			file="carson_module.rpt_po_cash_transaction"
+			attachment_use="True"
+			paperformat="paperformat_cash_transaction_paper"
+			print_report_name="'PO Cash Transaction'"
+			/>
+
+
+			<template id="rpt_po_cash_transaction">
+					<t t-call="web.html_container">
+							<t t-set="cash_po_transaction_list" t-value="docs.getReportValues(docs)"/>
+							<t t-set="report_header" t-value="docs.getReportHeaderValues(docs)"/>
+							<t t-set="report_sequence_code" t-value="docs.getSequence()"/>
+							<t t-set="report_preparedby" t-value="docs.getReportPreparedBy()"/>
+
+							<t t-set="report_checkedbyLogHead" t-value="docs.getCheckByLogisticHead()"/>
+							<t t-set="report_checkedbyAuditor" t-value="docs.getCheckByAuditor()"/>
+							<t t-set="report_checkedbyPOHead" t-value="docs.getNotedByPOHead()"/>
+							<t t-set="report_Ceo" t-value="docs.getCEOEsign()"/>
+							
+
+							
+							<div class="page article shoot_to_print_page" style="top:0in;
+																																		 left:0in;
+																																		 position:relative;
+																																		 font-size:12pt;
+																																		 width:100%">
+										<div class="shoot_to_print_page_1"  style="position:absolute; white-space: nowrap;">
+
+												<table class="table" style="margin-bottom:0px" cols="6">
+													<tbody>
+														<tr>
+																<td class="text-left" style="border-top:1px solid transparent;padding-bottom:0px" colspan="6">
+																		<strong><span t-esc="report_header['company_name']"/></strong>
+																</td>                            
+														</tr>
+														<tr>
+																<td class="text-left" style="border-top:1px solid transparent;padding-bottom:0px" colspan="4">
+																		<span t-esc="report_header['company_address']"/>
+																</td>                            
+																<td class="text-center" style="border-top:1px solid transparent;padding-bottom:0px" colspan="2">
+																		<strong><span>CONTROL NO: <span t-esc="report_sequence_code"/></span></strong>
+																</td>                                                          
+														</tr>
+														<tr/>
+														<tr>
+																<td class="text-left" style="border-top:1px solid transparent;padding-bottom:0px" colspan="6">
+																		<strong><span>CASH PURCHASES</span></strong>
+																		<br/><br/>
+																		<strong><span>DATE: </span></strong>
+																		<!-- <span t-esc="report_header['date_order']"/> -->
+																		<span t-esc="datetime.datetime.strptime(report_header['date_order'], '%Y-%m-%d %H:%M:%S').strftime('%B %d, %Y')"/>
+																</td>                            
+														</tr>
+													</tbody>
+												</table>
+												<br/>
+
+												<t t-set="discount_rate" t-value="0"/>
+												<t t-foreach="cash_po_transaction_list" t-as="order_line">
+													<t t-set="discount_rate" t-value="cash_po_transaction_list[order_line]['discount_rate']"/>
+												</t> 
+
+												<table class="table table-bordered table-condensed">
+													<thead>
+															<tr>
+																<td class="text-center" style="border: 1px solid black;">NO</td>
+																<td class="text-center" style="border: 1px solid black;">QTY</td>
+																<td class="text-center" style="border: 1px solid black;">UOM</td>
+																<td class="text-center" style="border: 1px solid black;">DESCRIPTION</td>
+																<td class="text-center" style="border: 1px solid black;">NOTES</td>
+																<td class="text-center" style="border: 1px solid black;">UNIT COST</td>
+																<!-- <td class="text-center" style="border: 1px solid black;"><span style="color: #FF5050 !important;">DISCOUNT RATE(<span t-esc="discount_rate"/> %)</span></td> -->
+																<td class="text-center" style="border: 1px solid black;">TOTAL</td>
+															</tr>                            
+													</thead>
+													<tbody>
+
+
+
+															<t t-set="sequnce" t-value="1"/>
+															<t t-set="total" t-value="0.00"/>
+															<t t-foreach="cash_po_transaction_list" t-as="order_line">
+																	<tr>
+																			<td class="text-center" style="border: 1px solid black;">
+																					<span t-esc="sequnce"/>
+																			</td>
+																			<td class="text-center" style="border: 1px solid black;">
+																					<span t-esc="cash_po_transaction_list[order_line]['product_qty']"/>
+																			</td>
+																			<td class="text-center" style="border: 1px solid black;">
+																					<span t-esc="cash_po_transaction_list[order_line]['product_uom'].upper()"/>
+																			</td>
+																			<td class="text-left" style="border: 1px solid black;">
+																					<span t-esc="cash_po_transaction_list[order_line]['description']"/>
+																					<t t-if="cash_po_transaction_list[order_line]['project_name']">
+																						<span> FOR: <span t-esc="cash_po_transaction_list[order_line]['project_name']"/></span>
+																					</t>
+																					<t t-if="cash_po_transaction_list[order_line]['rof_name']">
+																						<span> (<span t-esc="cash_po_transaction_list[order_line]['rof_name']"/>) </span>
+																					</t>
+																			</td>
+																			<td class="text-left" style="border: 1px solid black;">
+																					<span t-esc="cash_po_transaction_list[order_line]['price_dropdown_notes']"/>
+																			</td>                                      
+																			<td class="text-right" style="border: 1px solid black;">
+																				<span t-esc="'{0:,.2f}'.format(cash_po_transaction_list[order_line]['price_unit'])" />                                          
+																			</td>
+																			<!-- <td class="text-right" style="border: 1px solid black;">
+																					 <span style="color: #FF5050 !important;" t-esc="'{0:,.2f}'.format(cash_po_transaction_list[order_line]['discount_amount'])"/>      
+																			</td> -->  
+																			<td class="text-right" style="border: 1px solid black;">
+																					<span t-esc="'{0:,.2f}'.format(cash_po_transaction_list[order_line]['total'])" />                                          
+																			</td>
+																	</tr>
+																	<t t-set="sequnce" t-value="sequnce+1"/>
+																	<t t-set="total" t-value="total+cash_po_transaction_list[order_line]['total']"/>
+															</t>
+
+															<tr>
+																<td class="text-right" colspan="4" style="border-right: 1px solid black;"/>
+																<td class="text-right" colspan="2" style="border: 1px solid black;">TOTAL:</td>
+																
+																<td class="text-right" style="border: 1px solid black;"><strong><span t-esc="'{0:,.2f}'.format(total)" /></strong></td>
+																
+															</tr>                                                            
+													</tbody>
+												</table>
+												<div class="oe_structure"/>
+
+												<div class="row mt32"> 
+													<div class="col-xs-2" style="width:65%">
+														<strong><p>PREPARED BY:</p></strong>
+														<t t-if="report_preparedby">
+															 <p style="width:150px; height:80px;">
+															 	<span t-if="report_preparedby.e_signature" t-field="report_preparedby.e_signature" t-field-options="{&quot;widget&quot;: &quot;image&quot;,&quot;style&quot;:&quot;width: 120px;height: 65px&quot;}"/>
+															 	<span t-field="report_preparedby.name"/>
+															</p>
+														</t>                            
+													</div>
+													<div class="offset-xs-16"/>
+													<div class="col-xs-2 text-center">
+
+														<t t-if="report_Ceo">
+															 <p t-if="report_Ceo" style="width:150px; height:80px;">
+															 	<span t-if="report_Ceo.e_signature" t-field="report_Ceo.e_signature" t-field-options="{&quot;widget&quot;: &quot;image&quot;,&quot;style&quot;:&quot;width: 120px;height: 65px&quot;}"/>
+															 </p>
+														</t>
+														<t t-else="not report_Ceo">
+															<br/><br/><br/>
+														</t>
+														<p><u>RAUL M. TUASON</u></p>
+														<strong><p>PRESIDENT</p></strong>
+													</div>
+												</div>
+
+												<div class="row mt32"> 
+													<div class="col-xs-2">
+														<strong><p>CHECKED BY:</p></strong>
+													</div>
+												</div>
+
+												<div class="row mt32"> 
+													<div class="col-xs-2">
+														<t t-if="report_checkedbyLogHead">
+																<p style="width:150px; height:80px;">
+																	<span t-if="report_checkedbyLogHead.e_signature" t-field="report_checkedbyLogHead.e_signature" t-field-options="{&quot;widget&quot;: &quot;image&quot;,&quot;style&quot;:&quot;width: 120px;height: 65px&quot;}"/>
+																	<span t-field="report_checkedbyLogHead.name"/>
+																</p>
+														</t>
+													</div>
+													<div class="col-xs-2"/>
+													<div class="col-xs-2 text-center">
+														<t t-if="report_checkedbyAuditor">
+																<p style="width:150px; height:80px;">
+																	<span t-if="report_checkedbyAuditor.e_signature" t-field="report_checkedbyAuditor.e_signature" t-field-options="{&quot;widget&quot;: &quot;image&quot;,&quot;style&quot;:&quot;width: 120px;height: 65px&quot;}"/>
+																	<span t-field="report_checkedbyAuditor.name"/>
+																</p>
+														</t>
+													</div>                          
+												</div>
+
+												<div class="row mt32"> 
+													<div class="col-xs-2">
+														<strong><p>NOTED BY:</p></strong>
+													</div>
+												</div>
+
+												<div class="row mt32"> 
+													<div class="col-xs-2">
+														<t t-if="report_checkedbyPOHead">
+	                            <p style="width:150px; height:80px;">
+	                                <span t-if="report_checkedbyPOHead.e_signature" t-field="report_checkedbyPOHead.e_signature" t-field-options="{&quot;widget&quot;: &quot;image&quot;,&quot;style&quot;:&quot;width: 120px;height: 65px&quot;}"/>
+	                                <span t-field="report_checkedbyPOHead.name"/>
+	                            </p>
+                        		</t>
+													</div>
+												</div>
+
+												<div class="row mt32"> 
+													<div class="col-xs-2">
+														<strong><p>RECEIVED COPY BY:</p></strong>
+														<br/>
+														<p>DIOMEDES DE LEON</p>
+													</div>
+												</div>
+
+
+<!--
+												<p t-field="o.notes"/>
+												<div class="oe_structure"/>
+												<div class="row mt32 mb32"> 
+
+														<t t-foreach="o.e_signature" t-as="items">
+																<t t-if="items.sequence in [1,2,3,4,5,6] and items.is_rejected == False">
+																	<div class="col-xs-2">
+																		<p><span t-field="items.report_user_penmanship" style="font-weight:bold"/></p>
+																		<p style="width:100px; height:90px;"><span t-field="items.user_id.e_signature" t-field-options="{&quot;widget&quot;: &quot;image&quot;}"/></p>
+																		<p><span t-field="items.user_id.name"/></p>
+																		<p><span t-field="items.date_stamp"/></p>                        
+																	</div>                                      
+																</t>
+														</t>                            
+												 </div>             
+
+												 <div class="row mt32 mb32"> 
+														<t t-foreach="o.e_signature" t-as="items">
+																<t t-if="items.sequence in [7,8,9,10,11,12] and items.is_rejected == False">
+																	<div class="col-xs-2">
+																		<p><span t-field="items.report_user_penmanship" style="font-weight:bold"/></p>
+																		<p style="width:100px; height:90px;"><span t-field="items.user_id.e_signature" t-field-options="{&quot;widget&quot;: &quot;image&quot;}"/></p>
+																		<p><span t-field="items.user_id.name"/></p>
+																		<p><span t-field="items.date_stamp"/></p>                        
+																	</div>                                      
+																</t>
+														</t>                          
+												 </div> 
+												 
+												 <p style="font-size:80%"><strong>Signature over Printed Name</strong></p>
+												 <p style="font-size:70%"><strong>Date:<span t-esc="o.getDateToday()"/></strong></p>                        
+											 -->
+										</div>
+							</div>         
+					</t>
+			</template>    
+		</data>
+</odoo>

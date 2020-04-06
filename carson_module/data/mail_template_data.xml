@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data noupdate="0">
+    	<!--Email template Purchase Order -->
+        <record id="purchase.email_template_edi_purchase_done" model="mail.template">
+        	 
+        	<!--<field name="report_template" ref="carson_module.rpt_shoot_to_print"/>-->
+        	<field name="report_template" eval="[(6, 0, [ref('carson_module.rpt_shoot_to_print')])]"/>
+        </record>
+
+    	<!--Email template Purchase Quotation-->
+        <record id="purchase.email_template_edi_purchase" model="mail.template">
+        	<field name="report_template" ref="carson_module.rpt_shoot_to_print_quote"/>
+        </record>        
+	</data>
+</odoo>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_res_user_pin_wizard" model="ir.ui.view">
+        <field name="name">Change Pin</field>
+        <field name="model">res.users.pin.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Change Pin">
+                <group>
+                    <group>
+                        <field name="user_id" readonly="1"/>
+                        <field name="pin_numb" password="True"/>
+                    </group>
+                </group>
+                <footer>
+                    <button name="generatePin" string="Change Pin" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-default" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <act_window id="change_user_pin_wizard_action"
+        name="Change Pin"
+        src_model="res.users"
+        res_model="res.users.pin.wizard"
+        view_type="form" view_mode="form"
+        key2="client_action_multi" target="new"
+        groups="base.group_erp_manager"/>          
+</odoo>
+

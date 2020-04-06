@@ -1,0 +1,60 @@
+<odoo>
+  <data  noupdate="1">
+  	<!-- AREA -->
+
+    <record id="level_12" model="carson.rof.area">
+    	<field name="name">Level 12</field>
+    </record>
+
+     <record id="level_10" model="carson.rof.area">
+    	<field name="name">Level 10</field>
+    </record>
+
+    <record id="Level_16" model="carson.rof.area">
+    	<field name="name">Level 16</field>
+    </record>
+
+    <record id="level_17" model="carson.rof.area">
+    	<field name="name">Level 17</field>
+    </record>
+
+    <record id="tv_12" model="carson.rof.area">
+    	<field name="name">Tower Villa 12</field>
+    </record>
+
+    <record id="tv_16" model="carson.rof.area">
+    	<field name="name">Tower Villa 16</field>
+    </record>
+
+    <record id="tv_17" model="carson.rof.area">
+    	<field name="name">Tower Villa 17</field>
+    </record>
+
+    <record id="retail" model="carson.rof.area">
+    	<field name="name">Retail</field>
+    </record>
+
+    <!-- ZONE -->
+
+    <record id="z1" model="carson.rof.zone">
+    	<field name="name">Zone 1</field>
+    </record>
+
+     <record id="z2" model="carson.rof.zone">
+    	<field name="name">Zone 2</field>
+    </record>
+
+    <record id="z3" model="carson.rof.zone">
+    	<field name="name">Zone 3</field>
+    </record>
+
+    <record id="cc" model="carson.rof.zone">
+    	<field name="name">Crystal Corridor</field>
+    </record>
+
+    <record id="none" model="carson.rof.zone">
+    	<field name="name">none</field>
+    </record>
+
+  </data>
+</odoo>

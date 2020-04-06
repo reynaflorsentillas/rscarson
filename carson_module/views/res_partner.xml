@@ -1,0 +1,14 @@
+<odoo>
+  <data>
+    <record id="view_partner_form_telefax_extend" model="ir.ui.view">
+          <field name="name">res.partner.extend.telefax.form</field>
+          <field name="model">res.partner</field>
+           <field name="inherit_id" ref="base.view_partner_form"/>
+          <field name="arch" type="xml">
+                <field name ="email" position="before">
+                  <field name ="fax_number" widget="phone"/>
+                </field>
+          </field>
+        </record>
+  </data>
+</odoo>

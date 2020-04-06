@@ -1,0 +1,45 @@
+<odoo>
+  <data>
+      <record model="ir.ui.view" id="view_tree_rof_items_dps">
+        <field name="name">Daily Purchase Summary</field>
+        <field name="model">carson.rof.items</field>
+        <field name="arch" type="xml">
+          <tree string='Daily Purchase Summary' edit="false" create="false" delete="false">
+            <field name="rof_project_name" string="Allocation"/>
+             <field name="rof_name" string="REQ"/>
+             <field name="ordered_qty" string="Quantity"/>
+             <field name="product_uom" string="UOM"/>
+             <field name="product_id" string="Items"/>
+             <field name="name" string="Particulars"/>
+             <field name="state" string="State" />
+            </tree>
+        </field>
+      </record>
+
+
+  	
+        <record model="ir.actions.act_window" id="rof_item_report_dps">
+          <field name="name">Daily Purchase Summary</field>
+          <field name="res_model">carson.rof.items</field>
+          <field name="view_type">form</field>
+          <field name="view_mode">tree</field>
+          <field name="domain">[('state','=', 'purchase')]</field>
+          <field name="context">{}</field>
+          <field name="help">No Record/s Found.</field>
+        </record>
+
+        <!-- Removing the Purchase Analysis Report-->
+        <record model="ir.ui.menu" id="purchase.purchase_report">
+          <field name="action" eval="False"/>
+          <field name="groups_id" eval="[(6,0, [ref('purchase.group_purchase_user'),ref('purchase.group_purchase_manager')])]"/>
+        </record>
+
+        <menuitem id="purchase_report"
+            name="Purchase Analysis"
+            parent="purchase.purchase_report"
+            action="purchase.action_purchase_order_report_all"
+            groups="purchase.group_purchase_manager" 
+            sequence="1"/>        
+
+  </data>
+</odoo>

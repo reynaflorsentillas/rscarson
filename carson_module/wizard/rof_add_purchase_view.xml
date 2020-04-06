@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<data>
+
+    <record id="carson_rof_add_purchase_view" model="ir.ui.view">
+        <field name="name">carson.rof.add.purchase.form</field>
+        <field name="model">carson.rof.add.purchase</field>
+        <field name="arch" type="xml">
+            <form string="ROF Add To Existing Purchase Orders">
+                <group>
+                    <field name="rof_id" readonly="1" invisible="1" />
+                    <field name="carson_project_id" readonly="1" invisible="1" />
+                    <field name="item_ids" domain="[('rof_item_id','=',rof_id)]" required="1" mode="tree,kanban">
+                        <tree create="0">
+                            <field name="name"/>
+                            <field name="ordered_qty"/>
+                            <field name="purchase_qty"/>
+                        </tree>
+                        <form create="0" edit="0">
+                            <group>
+                                <group>
+                                    <field name="name" readonly="1"/>
+                                    <field name="ordered_qty" readonly="1"/>
+                                    <field name="purchase_qty" readonly="1"/>
+                                </group>
+                            </group>
+                        </form>
+                    </field>
+
+                    <field name="is_cash_transaction"/> 
+                    <field name="purchase_id" domain="[('state','in',['draft']),('project_id','=',carson_project_id)]" options="{'no_create_edit': True, 'no_quick_create': True, 'no_create':True}" attrs="{'invisible':[('is_cash_transaction','!=',False)], 'required':[('is_cash_transaction','=',False)]}"/>
+                    <field name="purchase_cash_id" domain="[('state','in',['draft']),('is_po_paid_by_cash','=',True)]" options="{'no_create_edit': True, 'no_quick_create': True, 'no_create':True}" attrs="{'invisible':[('is_cash_transaction','!=',True)], 'required':[('is_cash_transaction','=',True)]}"/>
+
+                </group>
+                <footer>
+                    <button name="apply" string="Apply" type="object" default_focus="1" class="oe_highlight"/>
+                    or
+                    <button special="cancel" string="Cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</data>
+</odoo>

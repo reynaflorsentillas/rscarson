@@ -1,0 +1,17 @@
+<odoo>
+  <data>
+    <record id="purchase_order_form_extension" model="ir.ui.view">
+        <field name="name">purchase.order.form</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form"/>
+        <field name="arch" type="xml">
+
+          <xpath expr="//page[1]/field[@name='order_line']/tree/field[@name='product_uom']" position="after">
+              <field name="price_dropdown_notes" groups="purchase.group_purchase_user,purchase.group_purchase_manager"/>
+          </xpath>
+
+        </field>
+    </record>
+
+  </data>
+</odoo>

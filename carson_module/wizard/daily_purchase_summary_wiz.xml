@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_daily_po_sumry" model="ir.ui.view">
+        <field name="name">Daily Purchase Summary</field>
+        <field name="model">daily.purchase.summary</field>
+        <field name="arch" type="xml">
+            <form string="Choose your date">
+                <group>
+                    <group>
+                        <field name="compute_at_date" widget="radio"/>
+                        <field name="datefrom" attrs="{'invisible': [('compute_at_date', '=', 0)],'required': [('compute_at_date', '=', 1)]}"/>
+                        <field name="dateto" attrs="{'invisible': [('compute_at_date', '=', 0)],'required': [('compute_at_date', '=', 1)]}"/>
+                    </group>
+                </group>
+                <footer>
+                    <button name="open_table" string="Retrieve ROF Items" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-default" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_daily_po_sumry" model="ir.actions.act_window">
+        <field name="name">Inventory Report</field>
+        <field name="res_model">daily.purchase.summary</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="carson_module.view_daily_po_sumry"/>
+        <field name="target">new</field>
+        <field name="context">{'default_compute_at_date': 0}</field>
+    </record>
+
+    <menuitem id="menu_rof_item_report_dps"
+        name="Daily Purchase Summary"
+        parent="purchase.purchase_report"
+        action="carson_module.action_daily_po_sumry"
+        groups="purchase.group_purchase_user,purchase.group_purchase_manager" 
+        sequence="2"/>    
+</odoo>
+

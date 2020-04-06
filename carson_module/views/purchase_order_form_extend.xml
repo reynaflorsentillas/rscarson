@@ -1,0 +1,30 @@
+<odoo>
+  <data>
+    <record id="invoice_form_extend" model="ir.ui.view">
+          <field name="name">account.invoice.form</field>
+          <field name="model">account.invoice</field>
+           <field name="inherit_id" ref="account.invoice_form"/>
+          <field name="arch" type="xml">
+            <xpath expr="//button[@name='action_invoice_open'][1]" position="after">
+              <button name="action_invoice_open" type="object" states="validate_ceo" string="Validate" class="oe_highlight o_invoice_validate" groups="account.group_account_invoice"/>
+            </xpath>
+
+            <xpath expr="//header/button[@name='action_invoice_open']" position="after">
+               <button name="validate_ceo" type="object" states="validate_warehouse_supervisor" string="Validate for CEO" class="oe_highlight" groups="carson_module.group_warehouse_supervisor"/>
+            </xpath>
+
+            <xpath expr="//header/button[@name='action_invoice_open']" position="after">
+               <button name="validate_warehouse_supervisor" type="object" states="draft" string="Validate for Warehouse Supervisor" class="oe_highlight" groups="carson_module.group_warehouse_supervisor"/>
+            </xpath>
+
+               <xpath expr="//button[@name='action_invoice_open'][1]" position="attributes">
+                 <attribute name="invisible">1</attribute>
+               </xpath>
+
+               <xpath expr="//header/field[@name='state']" position="replace">
+                  <field name="state" widget="statusbar" statusbar_visible="draft,validate_warehouse_supervisor,validate_ceo,open,paid" readonly="1"/>
+              </xpath>
+          </field>
+        </record>
+  </data>
+</odoo>

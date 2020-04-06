@@ -1,0 +1,305 @@
+<odoo>
+	<data noupdate="1">
+	<record model="ir.module.category" id="carson_module_management">
+	  <field name="name">Carson module access</field>
+	  <field name="description">User access level for this module</field>
+	  <field name="sequence">3</field>
+	</record>
+
+   <record id="group_user" model="res.groups">
+     <field name="name">User</field>
+     <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+     <field name="users" eval="[(4, ref('base.user_root'))]"/>
+     <field name="category_id" ref="carson_module.carson_module_management"/>
+    </record>
+
+    <record id="group_manager" model="res.groups">
+      <field name="name">Administrator</field>
+      <field name="implied_ids" eval="[(4, ref('carson_module.group_user'))]"/>
+      <field name="category_id" ref="carson_module.carson_module_management"/>
+    </record>
+
+    <record id="group_site_warehouseman" model="res.groups">
+      <field name="name">Site Warehouseman</field>
+      <field name="implied_ids" eval="[(4, ref('carson_module.group_user'))]"/>
+      <field name="category_id" ref="carson_module.carson_module_management"/>
+    </record>
+
+    <record id="group_site_qs" model="res.groups">
+      <field name="name">Site QS</field>
+      <field name="implied_ids" eval="[(4, ref('carson_module.group_user'))]"/>
+      <field name="category_id" ref="carson_module.carson_module_management"/>
+    </record>
+
+
+    <record id="group_poc" model="res.groups">
+      <field name="name">Project-in-Charge</field>
+      <field name="implied_ids" eval="[(4, ref('carson_module.group_user'))]"/>
+      <field name="category_id" ref="carson_module.carson_module_management"/>
+    </record>
+
+    <record id="group_project_manager" model="res.groups">
+      <field name="name">Project Manager</field>
+      <field name="implied_ids" eval="[(4, ref('carson_module.group_user'))]"/>
+      <field name="category_id" ref="carson_module.carson_module_management"/>
+    </record>
+
+    <record id="group_project_supervisor" model="res.groups">
+      <field name="name">Project Supervisor</field>
+      <field name="implied_ids" eval="[(4, ref('carson_module.group_user'))]"/>
+      <field name="category_id" ref="carson_module.carson_module_management"/>
+    </record>
+
+     <record id="group_can_override" model="res.groups">
+      <field name="name">Can Override ROF</field>
+      <field name="implied_ids" eval="[(4, ref('carson_module.group_user'))]"/>
+      <field name="category_id" ref="carson_module.carson_module_management"/>
+    </record>
+
+    <record id="group_op_manager" model="res.groups">
+      <field name="name">Operations Manager</field>
+      <field name="implied_ids" eval="[(4, ref('carson_module.group_user'))]"/>
+      <field name="category_id" ref="carson_module.carson_module_management"/>
+    </record>
+
+    <record id="group_purchasing_qs" model="res.groups">
+      <field name="name">Purchasing QS</field>
+      <field name="implied_ids" eval="[(4, ref('carson_module.group_user'))]"/>
+      <field name="category_id" ref="carson_module.carson_module_management"/>
+    </record>
+
+		<record id="group_purchasing_head" model="res.groups">
+      <field name="name">Purchasing Head</field>
+      <field name="implied_ids" eval="[(4, ref('carson_module.group_user'))]"/>
+      <field name="category_id" ref="carson_module.carson_module_management"/>
+    </record>
+
+		<record id="group_purchasing_boq" model="res.groups">
+      <field name="name">BOQ/Estimate</field>
+      <field name="implied_ids" eval="[(4, ref('carson_module.group_user'))]"/>
+      <field name="category_id" ref="carson_module.carson_module_management"/>
+    </record>
+
+		<record id="group_purchasing_cost" model="res.groups">
+      <field name="name">Cost</field>
+      <field name="implied_ids" eval="[(4, ref('carson_module.group_user'))]"/>
+      <field name="category_id" ref="carson_module.carson_module_management"/>
+    </record>
+
+		<record id="group_purchasing_ap_head" model="res.groups">
+      <field name="name">AP - Head</field>
+      <field name="implied_ids" eval="[(4, ref('carson_module.group_user'))]"/>
+      <field name="category_id" ref="carson_module.carson_module_management"/>
+    </record>
+
+    <record id="group_inventory" model="res.groups">
+      <field name="name">Inventory</field>
+      <field name="implied_ids" eval="[(4, ref('carson_module.group_user'))]"/>
+      <field name="category_id" ref="carson_module.carson_module_management"/>
+    </record>
+
+    <record id="group_main_warehouseman" model="res.groups">
+      <field name="name">Main Warehouseman</field>
+      <field name="implied_ids" eval="[(4, ref('carson_module.group_user'))]"/>
+      <field name="category_id" ref="carson_module.carson_module_management"/>
+    </record>
+
+    <record id="group_warehouse_supervisor" model="res.groups">
+      <field name="name">Warehouse Supervisor</field>
+      <field name="implied_ids" eval="[(4, ref('carson_module.group_user'))]"/>
+      <field name="category_id" ref="carson_module.carson_module_management"/>
+    </record>
+
+    <record id="group_logistics_head" model="res.groups">
+      <field name="name">Logistics Head</field>
+      <field name="implied_ids" eval="[(4, ref('carson_module.group_user'))]"/>
+      <field name="category_id" ref="carson_module.carson_module_management"/>
+    </record>
+
+  	<record id="group_qs_supervisor" model="res.groups">
+      <field name="name">QS Supervisor</field>
+      <field name="implied_ids" eval="[(4, ref('carson_module.group_user'))]"/>
+      <field name="category_id" ref="carson_module.carson_module_management"/>
+    </record>
+
+		<!-- Added By Arjel -->
+		<record id="group_purchasing_staff" model="res.groups">
+			<field name="name">Purchasing - Staff</field>
+			<field name="implied_ids" eval="[(4, ref('carson_module.group_user'))]"/>
+			<field name="category_id" ref="carson_module.carson_module_management"/>
+		</record>
+
+		<!-- Added By Krizzian -->
+		<record id="group_accounting_staff_qs" model="res.groups">
+			<field name="name">Accounting Staff - QS</field>
+			<field name="implied_ids" eval="[(4, ref('carson_module.group_user'))]"/>
+			<field name="category_id" ref="carson_module.carson_module_management"/>
+		</record>
+
+    <!-- Added By SDS -->
+    <record id="group_purchasing_boq_head" model="res.groups">
+      <field name="name">BOQ - Head</field>
+      <field name="implied_ids" eval="[(4, ref('carson_module.group_user'))]"/>
+      <field name="category_id" ref="carson_module.carson_module_management"/>
+    </record>
+
+    <record id="group_purchasing_staff_cash" model="res.groups">
+      <field name="name">Purchasing - Staff (Cash Transaction)</field>
+      <field name="implied_ids" eval="[(4, ref('carson_module.group_user'))]"/>
+      <field name="category_id" ref="carson_module.carson_module_management"/>
+    </record>    
+
+    <record id="group_satellite_warehouseman" model="res.groups">
+      <field name="name">Satellite Warehouseman</field>
+      <field name="implied_ids" eval="[(4, ref('carson_module.group_user'))]"/>
+      <field name="category_id" ref="carson_module.carson_module_management"/>
+    </record>
+
+    <!-- Added By SDS -->
+    <record id="group_purchasing_ceo" model="res.groups">
+      <field name="name">CEO</field>
+      <field name="implied_ids" eval="[(4, ref('carson_module.group_user'))]"/>
+      <field name="category_id" ref="carson_module.carson_module_management"/>
+    </record>
+
+    <record id="group_purchasing_cfo" model="res.groups">
+      <field name="name">CFO</field>
+      <field name="implied_ids" eval="[(4, ref('carson_module.group_user'))]"/>
+      <field name="category_id" ref="carson_module.carson_module_management"/>
+    </record>
+
+    <record id="group_purchasing_allow_ceo_cfo_approval" model="res.groups">
+      <field name="name">Allow Approval on Behalf of CEO and CFO</field>
+      <field name="implied_ids" eval="[(4, ref('carson_module.group_user'))]"/>
+      <field name="category_id" ref="carson_module.carson_module_management"/>
+    </record>
+
+    <record id="group_purchasing_allow_cfo_approval" model="res.groups">
+      <field name="name">Allow Approval on Behalf of cfo</field>
+      <field name="implied_ids" eval="[(4, ref('carson_module.group_user'))]"/>
+      <field name="category_id" ref="carson_module.carson_module_management"/>
+    </record>
+
+    <record id="group_purchasing_allow_ceo_approval" model="res.groups">
+      <field name="name">Allow Approval on Behalf of CEO</field>
+      <field name="implied_ids" eval="[(4, ref('carson_module.group_user'))]"/>
+      <field name="category_id" ref="carson_module.carson_module_management"/>
+    </record>
+
+    <record id="group_purchasing_auditor" model="res.groups">
+      <field name="name">Purchasing Auditor</field>
+      <field name="implied_ids" eval="[(4, ref('carson_module.group_user'))]"/>
+      <field name="category_id" ref="carson_module.carson_module_management"/>
+    </record>
+
+    <record id="group_production_user" model="res.groups">
+      <field name="name">Production User</field>
+      <field name="implied_ids" eval="[(4, ref('carson_module.group_user'))]"/>
+      <field name="category_id" ref="carson_module.carson_module_management"/>
+    </record>
+
+    <record id="group_production_manager" model="res.groups">
+      <field name="name">Production Manager</field>
+      <field name="implied_ids" eval="[(4, ref('carson_module.group_user'))]"/>
+      <field name="category_id" ref="carson_module.carson_module_management"/>
+    </record>
+
+    <record id="group_warehouse_receipt" model="res.groups">
+      <field name="name">Warehouse Receipt</field>
+      <field name="implied_ids" eval="[(4, ref('carson_module.group_user'))]"/>
+      <field name="category_id" ref="carson_module.carson_module_management"/>
+    </record>
+
+    <!-- RECORD RULES / ADDED BY RCS -->
+    <record model="ir.rule" id="requisition_order_rule">
+        <field name="name">Carson Requisition Order </field>
+        <field name="model_id" search="[('model','=','carson.rof')]" model="ir.model"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('carson_project_id.project_users.user_id','in',[user.id])]</field>
+    </record>
+
+    <record model="ir.rule" id="stock_picking_type_site_rule">
+        <field name="name">Stock Operation Type site warehouse</field>
+        <field name="model_id" search="[('model','=','stock.picking.type')]" model="ir.model"/>
+        <field name="groups" eval="[(6,0,[ref('carson_module.group_site_warehouseman'),ref('carson_module.group_satellite_warehouseman'),ref('carson_module.group_site_qs'),ref('carson_module.group_project_manager'),ref('carson_module.group_poc'),ref('carson_module.group_project_supervisor')])]"/>
+        <!-- <field name="global" eval="True"/> -->
+        <field name="domain_force">['|', ('warehouse_id', '=', False),('warehouse_id.project_users.user_id','in',[user.id])]</field>
+    </record>
+
+    <record model="ir.rule" id="stock_picking_site_rule">
+        <field name="name">stock_picking site warehouse</field>
+        <field name="model_id" search="[('model','=','stock.picking')]" model="ir.model"/>
+        <field name="groups" eval="[(6,0,[ref('carson_module.group_site_warehouseman'),ref('carson_module.group_satellite_warehouseman'),ref('carson_module.group_site_qs'),ref('carson_module.group_project_manager'),ref('carson_module.group_poc'),ref('carson_module.group_project_supervisor')])]"/>
+        <!-- <field name="global" eval="True"/> -->
+        <field name="domain_force">[('picking_type_id.warehouse_id.project_users.user_id','in',[user.id])]</field>
+    </record>
+
+    <record model="ir.rule" id="stock_move_site_rule">
+        <field name="name">stock_move site warehouse</field>
+        <field name="model_id" search="[('model','=','stock.move')]" model="ir.model"/>
+        <field name="groups" eval="[(6,0,[ref('carson_module.group_site_warehouseman'),ref('carson_module.group_satellite_warehouseman'),ref('carson_module.group_site_qs'),ref('carson_module.group_project_manager'),ref('carson_module.group_poc'),ref('carson_module.group_project_supervisor')])]"/>
+        <!-- <field name="global" eval="True"/> -->
+        <field name="domain_force">['|',('warehouse_id','=',False),('warehouse_id.project_users.user_id','in',[user.id])]</field>
+    </record>
+
+    <!-- <record model="ir.rule" id="stock_move_line_site_rule">
+        <field name="name">stock_move_line site warehouse</field>
+        <field name="model_id" search="[('model','=','stock.move.line')]" model="ir.model"/>
+        <field name="groups" eval="[(4,ref('carson_module.group_site_warehouseman'))]"/>
+        <field name="domain_force">['|',('move_id','=',False),('move_id.warehouse_id.project_users.user_id','in',[user.id])]</field>
+    </record> -->
+
+    <record model="ir.rule" id="stock_quant_site_rule">
+        <field name="name">stock_quant site warehouse</field>
+        <field name="model_id" search="[('model','=','stock.quant')]" model="ir.model"/>
+        <field name="groups" eval="[(6,0,[ref('carson_module.group_site_warehouseman'),ref('carson_module.group_satellite_warehouseman'),ref('carson_module.group_site_qs'),ref('carson_module.group_project_manager'),ref('carson_module.group_poc'),ref('carson_module.group_project_supervisor')])]"/>
+        <!-- <field name="global" eval="True"/> -->
+        <field name="domain_force">[('location_id.warehouse_id.project_users.user_id','in',[user.id])]</field>
+    </record>
+
+    <record model="ir.rule" id="carson_rof_edit_satellite_rule">
+        <field name="name">carson_rof edit rule for satellite</field>
+        <field name="model_id" search="[('model','=','carson.rof')]" model="ir.model"/>
+        <field name="groups" eval="[(6,0,[ref('carson_module.group_satellite_warehouseman')])]"/>
+        <field name="perm_read" eval="False"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="domain_force">[('rof_type','=','satellite')]</field>
+    </record>
+
+    <record model="ir.rule" id="carson_rof_edit_site_rule">
+        <field name="name">carson_rof edit rule for site</field>
+        <field name="model_id" search="[('model','=','carson.rof')]" model="ir.model"/>
+        <field name="groups" eval="[(6,0,[ref('carson_module.group_site_warehouseman')])]"/>
+        <field name="perm_read" eval="False"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="domain_force">[('rof_type','in',['satellite','site'])]</field>
+    </record>
+
+    <record model="ir.rule" id="carson_rof_edit_qs_rule">
+        <field name="name">carson_rof edit rule for qs</field>
+        <field name="model_id" search="[('model','=','carson.rof')]" model="ir.model"/>
+        <field name="groups" eval="[(6,0,[ref('carson_module.group_site_qs')])]"/>
+        <field name="perm_read" eval="False"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="domain_force">[('rof_type','in',['satellite','site'])]</field>
+    </record>
+
+    <!-- <record model="ir.rule" id="carson_rof_edit_rule_qs">
+        <field name="name">carson_rof edit rule for site qs (own documents and om approved)</field>
+        <field name="model_id" search="[('model','=','carson.rof')]" model="ir.model"/>
+        <field name="groups" eval="[(6,0,[ref('carson_module.group_site_qs')])]"/>
+        <field name="perm_read" eval="False"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+        <field name="domain_force">['|',('create_uid.id','=',user.id),('is_omapproved','=',True)]</field>
+    </record> -->
+
+   </data>
+ </odoo>

@@ -1,0 +1,51 @@
+<odoo>
+  <data>
+		<record id="view_inventory_adjustment_custom" model="ir.ui.view">
+		        <field name="name">stock.inventory.form.custom</field>
+		         <field name="model">stock.inventory</field>
+		         <field name="inherit_id" ref="stock.view_inventory_form"></field>
+		         <field name="arch" type="xml"> 
+		         <xpath expr="//button[@name='action_done']" position="attributes">
+		         		<attribute name="groups">carson_module.group_manager,carson_module.group_logistics_head</attribute> 
+		         		<attribute name="states">verified</attribute> 
+                	</xpath>
+
+		         <xpath expr="//button[@name='action_cancel_draft'][2]" position="attributes">
+		         		<attribute name="states">confirm,verified</attribute>
+		         </xpath>
+		         <xpath expr="//button[@name='action_done']" position="after" >  
+		         		<button name="action_verified" string="Verify Inventory" class="btn btn-primary" groups="carson_module.group_warehouse_supervisor,carson_module.group_manager" attrs="{'invisible':[('state','!=','confirm')]}" type="object"/>
+                 </xpath>
+		         </field>
+		         
+		 </record> 
+
+		 <record id="view_inventory_adjustment_form_state_custom" model="ir.ui.view">
+		        <field name="name">stock.inventory.form.state.custom</field>
+		         <field name="model">stock.inventory</field>
+		         <field name="inherit_id" ref="carson_module.view_inventory_adjustment_custom"></field> 
+		         <field name="arch" type="xml"> 
+		         <xpath expr="//field[@name='state']" position="attributes" >  
+		         		<attribute name="statusbar_visible">draft,confirm,verified,done</attribute>
+                	</xpath>
+		         </field>
+		         
+		 </record> 
+
+		 <record id="view_inventory_adj_chatter" model="ir.ui.view">
+            <field name="name">stock.inventory.custom.chatter</field>
+             <field name="model">stock.inventory</field>
+             <field name="inherit_id" ref="stock.view_inventory_form"></field>
+             <field name="arch" type="xml">
+              <sheet position="after">
+                <div class="oe_chatter">
+                  <field name="message_follower_ids" widget="mail_followers" />
+                  <field name="activity_ids" widget="mail_activity"/>
+                  <field name="message_ids" widget="mail_thread" />
+                </div>
+              </sheet>
+             </field>
+     </record>
+
+ </data>
+</odoo>  

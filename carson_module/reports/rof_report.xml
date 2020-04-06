@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>  
+    	<report id="carson_rof_report"
+    		string="Requisition Order Report"
+    		model="carson.rof"
+    		report_type="qweb-pdf"
+    		name="carson_module.rof_report_template"
+    		print_report_name="'Requisition Order - %s' % (object.name)"
+    		/>
+    	
+</odoo>

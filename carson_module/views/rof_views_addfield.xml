@@ -1,0 +1,15 @@
+<!-- <odoo>
+  <data>
+    <record model="ir.ui.view" id="view_form_rof_extend">
+      <field name="name">Requisition Order Form</field>
+      <field name="model">carson.rof</field>
+       <field name="inherit_id" ref="carson_module.view_form_rof"/>
+      <field name="arch" type="xml">
+        <xpath expr="//field[@name='area']" position="after">
+          <field name="zone" widget="selection" attrs="{'readonly': [('rof_state', 'in', ('done','cancelled'))]}"/>
+        </xpath>
+      </field>
+    </record>
+  </data>
+</odoo>
+ -->

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="view_warehouse_extend" model="ir.ui.view">
+            <field name="name">stock.warehouse.extend</field>
+            <field name="model">stock.warehouse</field>
+            <field name="inherit_id" ref="stock.view_warehouse" />
+            <field name="arch" type="xml">
+
+                <xpath expr="//notebook/page[2]/group[1]" position="after">
+                    <group string="Carson Projects">
+                        <field name="carson_project_ids"/>
+                        <field name="project_users">
+                            <tree>
+                                <field name="groups" required="1" />
+                                <field name="user_id" required="1" />
+                            </tree>
+                        </field>
+                    </group>
+                </xpath>
+
+                 <xpath expr="//field[@name='code']" position="after">
+                    <field name="warehouse_type"/>
+                </xpath>
+
+            </field>
+        </record>
+
+
+        <record id="view_location_form_extend" model="ir.ui.view">
+            <field name="name">stock.location.extend</field>
+            <field name="model">stock.location</field>
+            <field name="inherit_id" ref="stock.view_location_form" />
+            <field name="arch" type="xml">
+
+                <xpath expr="//button[@name='toggle_active']" position="after">
+                    <button name="button_compute_warehouse" string="Get Warehouse" type="object" class="oe_stat_button" icon="fa-building-o" groups="base.group_no_one"/>
+                </xpath>
+
+                <xpath expr="//field[@name='usage']" position="after">
+                    <field name="warehouse_id"/>
+                </xpath>
+
+            </field>
+        </record>
+
+    </data>
+</odoo>

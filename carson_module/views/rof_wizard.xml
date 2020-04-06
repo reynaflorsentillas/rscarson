@@ -1,0 +1,43 @@
+
+<odoo>
+  <data>
+  
+    <record id="rof_wizard_view_form" model="ir.ui.view">
+        <field name="name">cars.rof_qizard.view.form</field>
+        <field name="model">carson.rof_wizard_purchase_order</field>
+        <field name="arch" type="xml">
+            <form string="">
+                <sheet>
+                    <group>
+                    <p>This generates a Request from non live project sites</p>
+                        <field name="carson_project_id"></field>
+                    </group>
+                    <field name="rofclasslines">
+                    <tree create="true" edit="true" delete="true" editable="bottom">
+                     <field name="product_id"></field>
+                     <field name="quantity_requested"></field>
+                    <field name="uom_id"></field>
+                    </tree>
+                    </field>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="rof_wizard_launch_action" model="ir.actions.act_window">
+        <field name="name">Manual ROF</field>
+        <field name="res_model">carson.rof_wizard_purchase_order</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>            
+    </record>
+<!-- 
+    <menuitem
+        id="rof_wizard_menu"
+        name="Manual ROF"
+        action="rof_wizard_launch_action"
+        parent="purchase.menu_purchase_root"
+        sequence="10"/> -->
+
+  </data>
+  </odoo>

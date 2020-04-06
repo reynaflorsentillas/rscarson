@@ -1,0 +1,140 @@
+<odoo>
+  <data>  
+    <record model="ir.ui.view" id="view_form_carson_projects">
+      <field name="name">Carson Project Form</field>
+      <field name="model">carson.projects</field>   
+      <field name="arch" type="xml">
+        <form string="Carson Project Form" create="false" duplicate="1"> 
+          <header> 
+          </header>
+          <sheet>   
+            <div class="oe_title">   
+                 <h1>
+                      <field name="name" placeholder='Project Name' />
+                </h1> 
+            </div> 
+            <br/>
+           <group col="4">
+           <field name="company_id"  domain="[('is_company','=',True),('customer','=',True)]" /> 
+           <field name="date_deadline"  />  
+           <separator/>
+           </group>  
+           <notebook>
+              <page string="Requisition Order Forms">
+                    <field name="project_rofs" mode="tree,form" context="{'form_view_ref':'carson_module.carson_project_rof_form1'}"  readonly="1">
+                                 <tree> 
+                                    <field name="name" readonly="1"  />   
+                                    <field name="requested_date" readonly="1"/>
+                                    <field name="rof_state" readonly="1" /> 
+                                    <field name="project_id" invisible="1" />
+                                </tree> 
+                      </field>
+                </page>
+
+              <page string="Authorized Users"> 
+                  <field name="project_users" >
+                  <tree editable="bottom">
+                       <field name="groups" required="1" />
+                       <field name="user_id" required="1" />
+                  </tree>
+                </field>
+              </page>
+               <page name="settings" string="Settings">
+                  <group>
+                    <group name="warehouse" string="Warehouse">
+                      <field name="warehouse_id"/>
+                      <field name="site_warehouse_id"/>
+                    </group>
+                    <group>
+                      <field name="purchase_seq_id" groups="base.group_no_one"/>
+                      <field name="prod_purchase_seq_id" groups="base.group_no_one"/>
+                    </group>
+                  </group>
+                  <group>
+                    <group name="manufacture" string="Manufacturing">
+                      <field name="location_dest_id"/>
+                    </group>
+                  </group>
+               </page>
+            </notebook>
+
+          </sheet>
+                <div class="oe_chatter">
+                  <field name="message_follower_ids" widget="mail_followers" />
+                  <field name="activity_ids" widget="mail_activity"/>
+                  <field name="message_ids" widget="mail_thread" />
+                </div>
+        </form> 
+      </field>
+    </record>
+
+
+    <record model="ir.ui.view" id="view_tree_carson_projects">
+      <field name="name">Carson Project List</field>
+      <field name="model">carson.projects</field>  
+      <field name="arch" type="xml">
+        <tree string='Carson Project List'>
+          <field name="name"/>
+           <field name="company_id"/> 
+          </tree>
+      </field>
+    </record>
+ 
+
+    <record model="ir.ui.view" id="carson_project_rof_form1">
+      <field name="name">carson.project.rof.form</field>
+      <field name="model">carson.rof</field> 
+      <field name="inherit_id" ref="carson_module.view_form_rof"></field>
+       <field name="mode">primary</field>
+      <field name="type">form</field>
+      <field name="arch" type="xml">
+         	<xpath expr="//header" position="replace" > 
+                  <field name="rof_state" invisible="1" />
+               </xpath>
+               <xpath expr="//field[@name='project_id']" position="attributes" >
+                  	<attribute name="readonly">1</attribute>
+                    <attribute name="domain">[('id','=',parent.company_id.id)]</attribute>
+               </xpath>
+               <xpath expr="//field[@name='carson_project_id']" position="attributes" >
+                    <attribute name="readonly">1</attribute>
+                    <attribute name="required">0</attribute>
+               </xpath>
+      </field>
+    </record>
+
+    <record model="ir.ui.view" id="carson_projects_users_kanban">
+      <field name="name">carson.projects.users.kanban</field>
+      <field name="model">carson.projects.users</field>
+      <field name="arch" type="xml">
+          <kanban class="o_kanban_mobile">
+              <field name="name"/>
+              <field name="groups"/>
+              <field name="user_id"/>
+              <field name="carson_project_id"/>
+              <templates>
+                  <t t-name="kanban-box">
+                      <div t-attf-class="oe_kanban_card oe_kanban_global_click">
+                          <div class="o_kanban_record_top mb8">
+                              <div class="o_kanban_record_headings">
+                                  <strong class="o_kanban_record_title"><span><t t-esc="record.user_id.value"/></span></strong>
+                              </div>
+                          </div>
+                          <div class="o_kanban_record_bottom">
+                              <div class="oe_kanban_bottom_left">
+                                  <t t-esc="record.groups.value"/>
+                              </div>
+                              <div class="oe_kanban_bottom_right">
+                              </div>
+                          </div>
+                      </div>
+                  </t>
+              </templates>
+          </kanban>
+      </field>
+    </record>
+
+  </data>
+</odoo>
+
+ 
+

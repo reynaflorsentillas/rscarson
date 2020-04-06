@@ -1,0 +1,586 @@
+<odoo>
+	<data>
+		<!-- Removing PO Report -->
+		<record id="purchase.action_report_purchase_order" model="ir.actions.report">
+			<field name="binding_model_id" eval="False"/>
+		</record>
+
+
+		<!-- Removing PO Report Quotation -->
+		<record id="purchase.report_purchase_quotation" model="ir.actions.report">
+			<field name="binding_model_id" eval="False"/>
+		</record>
+
+
+		<!-- External Layout -->
+		<template id="external_layout_shoot_to_print_po_rpt">
+			<t t-if="not o and doc">
+				<t t-set="o" t-value="doc"/>
+			</t>
+
+			<t t-if="o and 'company_id' in o">
+				<t t-set="company" t-value="o.company_id.sudo()"/>
+			</t>
+
+			<t t-if="not o or not 'company_id' in o">
+				<t t-set="company" t-value="res_company"/>
+			</t>
+
+			<t t-call="carson_module.external_shoot_to_print_po"><t t-raw="0"/></t>
+		</template>
+
+		<template id="external_shoot_to_print_po">
+			<div class="article o_report_layout_standard">
+				<t t-raw="0" />
+			</div>
+		</template>
+
+		<!-- Purchase Order -->
+		<report
+			id="rpt_shoot_to_print_po_selection"
+			model="purchase.order"
+			string="Purchase Order"
+			report_type="qweb-pdf"
+			name="carson_module.rpt_shoot_to_print"
+			file="carson_module.rpt_shoot_to_print"
+			attachment_use="True"
+			paperformat="paperformat_sh_to_prnt_po"
+			print_report_name="
+								(object.state in ('draft', 'sent') and 'PO for Approval - %s' % (object.name) or
+								'Purchase Order - %s' % (object.name))"
+		/>
+
+
+		<template id="rpt_shoot_to_print">
+			<t t-call="web.html_container">
+				<t t-foreach="docs" t-as="o">
+					<div class="page article shoot_to_print_page" style="top:0in; left:0in; position:relative; font-size:12pt; width:100%">
+						<div class="shoot_to_print_page_1" style="position:absolute; white-space: nowrap;">
+							<table class="table" style="margin-bottom:0px">
+								<tbody>
+									<tr>
+										<td style="border-top:1px solid transparent;padding-bottom:0px"/>
+										<td class="text-center" style="border-top:1px solid transparent;padding-bottom:0px">
+											<strong><span t-field="o.company_id.name"/></strong>
+										</td>
+										<td style="border-top:1px solid transparent;padding-bottom:0px"/>
+									</tr>
+									<tr>
+										<td style="border-top:1px solid transparent;padding-bottom:0px;padding-top:0px"/>
+										<td class="text-center" style="border-top:1px solid transparent;padding-bottom:0px;padding-top:0px">
+											<strong><span t-field="o.company_id.street"/></strong>
+										</td>
+										<td style="border-top:1px solid transparent;padding-bottom:0px;padding-top:0px"/>
+									</tr>
+									<tr>
+										<td style="border-top:1px solid transparent;padding-bottom:0px;padding-top:0px"/>
+										<td class="text-center" style="border-top:1px solid transparent;padding-bottom:0px;padding-top:0px">
+											<strong><span t-field="o.company_id.street2"/></strong>, <strong><span t-field="o.company_id.city"/></strong>
+										</td>
+										<td style="border-top:1px solid transparent;padding-bottom:0px;padding-top:0px"/>
+									</tr>
+									<tr>
+										<td style="border-top:1px solid transparent;padding-bottom:0px;padding-top:0px"/>
+										<td class="text-center" style="border-top:1px solid transparent;padding-bottom:0px;padding-top:0px">
+											<strong><span t-field="o.company_id.phone"/></strong>
+										</td>
+										<td style="border-top:1px solid transparent;padding-bottom:0px;padding-top:0px"/>
+									</tr>                                                                                    
+								</tbody>
+							</table> 
+
+							<table class="table table-bordered table-condensed" style="margin-bottom:0px">
+								<tbody>
+									<tr>
+										<td class="text-left" style="border: 1px solid black;"> Supplier:</td>
+										<td class="text-left" style="border: 1px solid black;"> <strong><span t-field="o.partner_id.name"/></strong></td>
+										<td class="text-left" style="border: 1px solid black;"> PO:</td>
+										<td class="text-left" style="border: 1px solid black;"> <span t-field="o.name"/></td>
+									</tr>
+									<tr>
+										<td class="text-left" style="border: 1px solid black;"> Address:</td>
+										<td class="text-left" style="border: 1px solid black;"> <span t-field="o.partner_id.street"/>,<span t-field="o.partner_id.street2"/>, <span t-field="o.partner_id.city"/></td>
+										<td class="text-left" style="border: 1px solid black;"> Date:</td>
+										<td class="text-left" style="border: 1px solid black;"> <span t-field="o.date_order" t-options='{"format": "MMMM dd, yyyy"}'/></td>
+									</tr>
+									<tr>
+										<td class="text-left" style="border: 1px solid black;">Tels #:</td>
+										<td class="text-left" style="border: 1px solid black;"><span t-field="o.partner_id.phone"/>/<span t-field="o.partner_id.mobile"/></td>
+										<td class="text-left" style="border: 1px solid black;"> Delivery:</td>
+										<td class="text-left" style="border: 1px solid black;"></td>
+									</tr>
+									<tr>
+										<td class="text-left" style="border: 1px solid black;">Telefax #:</td>
+										<td class="text-left" style="border: 1px solid black;"><span t-field="o.partner_id.fax_number"/></td>
+										<td class="text-left" style="border: 1px solid black;"> Ref No:</td>
+										<!-- <td class="text-left" style="border: 1px solid black;"> <span t-field="o.rof_id.name"/></td> -->
+										<td class="text-left" style="border: 1px solid black;"> <span t-field="o.rof_ref_no"/></td>
+									</tr>
+									<tr>
+										<td class="text-left" style="border: 1px solid black;">PROJECT:</td>
+										<!-- <td class="text-left" colspan="3" style="border: 1px solid black;"> <span t-field="o.rof_id.project_id.name"/> <span t-field="o.area_id.name"/> <span t-field="o.zone_id.name"/></td> -->
+										<td class="text-left" colspan="3" style="border: 1px solid black;"> <span t-field="o.project_location"/></td>
+									</tr>                            
+								</tbody>
+							</table>
+
+							<t t-set="discount_rate" t-value="0"/>
+							<t t-foreach="o.order_line" t-as="order_line">
+								<t t-set="discount_rate" t-value="order_line.discount"/>
+							</t>
+
+							<table class="table table-bordered table-condensed">
+								<tbody>
+									<tr>
+										<td class="text-center" colspan="8" style="border-left: 1px solid black; border-right: 1px solid black; border-bottom: 1px solid black; border-top: 1px solid transparent;"> SUPPLY AND DELIVERY</td>
+									</tr>
+									<tr>
+										<td class="text-center" style="border: 1px solid black;">ITEM</td>
+										<td class="text-center" style="border: 1px solid black;">QTY</td>
+										<td class="text-center" style="border: 1px solid black;">UNIT</td>
+										<td class="text-center" style="border: 1px solid black;">DESCRIPTION</td>
+										<td class="text-center" style="border: 1px solid black;">UNIT PRICE</td>
+										<!--<td class="text-center" style="border: 1px solid black;">DISCOUNT(<span t-esc="discount_rate"/> %)</td>-->
+										
+										<td class="text-center" style="border: 1px solid black;"><span style="color: #FF5050 !important;">DISCOUNT (<span t-esc="discount_rate"/> %)</span></td>
+										<td class="text-center" style="border: 1px solid black;"><span>DISCOUNTED PRICE</span></td>                                
+
+										<td class="text-center" style="border: 1px solid black;">AMOUNT</td>
+									</tr>
+
+									<t t-foreach="o.order_line" t-as="order_line">
+										<t t-set="discount" t-value="order_line.price_unit *  (order_line.discount/100)"/>
+										<tr>
+											<td class="text-center" style="border: 1px solid black;">
+												<span t-field="order_line.product_id.default_code"/>
+											</td>
+											<td class="text-center" style="border: 1px solid black;">
+												<span t-field="order_line.product_qty"/>
+											</td>
+											<td class="text-center" style="border: 1px solid black;">
+												<span t-field="order_line.product_uom"/>
+											</td>
+											<td class="text-left" style="border: 1px solid black;">
+												<span t-field="order_line.name"/>
+											</td>
+											<td class="text-right" style="border: 1px solid black;">
+												<span t-field="order_line.price_unit"/>
+											</td>
+
+											<td class="text-right" style="border: 1px solid black;">
+												<!-- <span style="color: #FF5050 !important;" t-esc="'{0:,.2f}'.format(order_line.discount)"/> -->
+													
+												<!-- <span style="color: #FF5050 !important;" t-esc="(order_line.product_qty * order_line.price_unit) - order_line.price_subtotal"/> -->
+												<span style="color: #FF5050 !important;" t-esc="'{0:,.2f}'.format(discount)"/>
+											</td>
+
+											<td class="text-right" style="border: 1px solid black;">
+												<!-- <span style="color: #FF5050 !important;" t-esc="'{0:,.2f}'.format((order_line.product_qty * order_line.price_unit)  *  (order_line.discount/100))"/> -->
+												<!-- <span style="color: #FF5050 !important;" t-field="order_line.price_subtotal"/> -->
+												<span t-esc="'{0:,.2f}'.format(order_line.price_unit - discount)"/>
+											</td>
+
+											<td class="text-right" style="border: 1px solid black;">
+												<t t-if="order_line.override_price_subtotal > 0">
+													<span t-field="order_line.price_subtotal"/>
+												</t>
+												<t t-else="">
+													<!-- <span t-esc="'{0:,.2f}'.format(order_line.product_qty * order_line.price_unit)"/> -->
+													<span t-esc="'{0:,.2f}'.format(order_line.product_qty * (order_line.price_unit - discount))"/>
+												</t>
+											</td>
+										</tr>
+									</t>
+
+									<tr>
+										<td class="text-center" colspan="8" style="border: 1px solid black;">***NOTHING FOLLOWS***</td>
+									</tr>
+									<tr>
+										<td class="text-right" colspan="7" style="border: 1px solid black;">Grand Total in Php <span t-if="o.amount_tax &gt; 0">(Vat INC)</span><span t-if="o.amount_tax == 0">(Vat EX)</span>
+										</td>
+
+										<!-- <td class="text-right" style="border: 1px solid black;"><span t-field="o.amount_untaxed"/></td> -->
+										<td class="text-right" style="border: 1px solid black;"><span t-field="o.amount_total"/></td>
+									</tr>                                                            
+								</tbody>
+							</table>
+
+							<p t-field="o.notes"/>
+							<div class="oe_structure"/>
+							<div class="row mt32 mb32"> 
+								<t t-if="o.is_po_paid_by_cash == True">
+									<t t-foreach="o.e_signature" t-as="items">
+										<t t-if="items.sequence in [1,2,3,4,5,6] and items.is_rejected == False">
+											<div class="col-xs-2">
+												<p><span t-field="items.report_user_penmanship" style="font-weight:bold"/></p>
+												<p style="width:100px; height:90px;"><span t-field="items.user_id.e_signature" t-field-options="{&quot;widget&quot;: &quot;image&quot;}"/></p>
+												<p><span t-field="items.user_id.name"/></p>
+												<p><span t-field="items.date_stamp"/></p>                        
+											</div>                                      
+										</t>
+									</t>                              
+								</t>
+								<t t-if="not o.is_po_paid_by_cash">
+									<t t-foreach="o.e_signature" t-as="items">
+										<t t-if="items.sequence in [1,2,3,4,5,6] and items.is_rejected == False and items.state != 'approve_ceo'">
+											<div class="col-xs-2">
+												<p><span t-field="items.report_user_penmanship" style="font-weight:bold"/></p>
+												<p style="width:100px; height:90px;"><span t-field="items.user_id.e_signature" t-field-options="{&quot;widget&quot;: &quot;image&quot;}"/></p>
+												<p align="center"><span t-field="items.user_id.name"/></p>
+												<p align="center"><span t-field="items.date_stamp"/></p>                        
+											</div>                                      
+										</t>
+									</t>                              
+								</t>                          
+							</div>             
+
+							<div class="row mt32 mb32"> 
+								<t t-foreach="o.e_signature" t-as="items">
+									<t t-if="items.sequence in [7,8,9,10,11,12] and items.is_rejected == False">
+										<div class="col-xs-2">
+											<p><span t-field="items.report_user_penmanship" style="font-weight:bold"/></p>
+											<p style="width:100px; height:90px;"><span t-field="items.user_id.e_signature" t-field-options="{&quot;widget&quot;: &quot;image&quot;}"/></p>
+											<p><span t-field="items.user_id.name"/></p>
+											<p><span t-field="items.date_stamp"/></p>                        
+										</div>                                      
+									</t>
+								</t>                          
+							</div> 
+							<!--<p style="font-size:80%"><strong>Signature over Printed Name</strong></p>
+							<p style="font-size:70%"><strong>Date:<span t-esc="o.getDateToday()"/></strong></p>-->
+						</div>
+					</div>
+					<div class="footer">
+						<div class="text-center text-muted">
+							<span t-field="o.name"/> | Page <span class="page"/> of <span class="topage"/>
+						</div>
+					</div>
+				</t>           
+			</t>
+		</template>
+
+
+		<!-- Purchase Quotation -->
+		<report
+			id="rpt_shoot_to_print_po_quote_selection"
+			model="purchase.order"
+			string="PO for Approval"
+			report_type="qweb-pdf"
+			name="carson_module.rpt_shoot_to_print_quote"
+			file="carson_module.rpt_shoot_to_print_quote"
+			attachment_use="True"
+			paperformat="paperformat_sh_to_prnt_po"
+			print_report_name="
+								('PO for Approval - %s' % (object.name))"
+		/>
+
+
+		<template id="rpt_shoot_to_print_quote">
+			<t t-call="web.html_container">
+				<t t-foreach="docs" t-as="o">
+					<div class="page article shoot_to_print_page" style="top:0in; left:0in; position:relative; font-size:12pt; width:100%">
+						<div class="shoot_to_print_page_1" style="position:absolute; white-space: nowrap;">
+							<table class="table" style="margin-bottom:0px">
+								<tbody>
+									<tr>
+										<td style="border-top:1px solid transparent;padding-bottom:0px"/>
+										<td class="text-center" style="border-top:1px solid transparent;padding-bottom:0px">
+											<strong><span t-field="o.company_id.name"/></strong>
+										</td>
+										<td style="border-top:1px solid transparent;padding-bottom:0px"/>
+									</tr>
+									<tr>
+										<td style="border-top:1px solid transparent;padding-bottom:0px;padding-top:0px"/>
+										<td class="text-center" style="border-top:1px solid transparent;padding-bottom:0px;padding-top:0px">
+											<strong><span t-field="o.company_id.street"/></strong>
+										</td>
+										<td style="border-top:1px solid transparent;padding-bottom:0px;padding-top:0px"/>
+									</tr>
+									<tr>
+										<td style="border-top:1px solid transparent;padding-bottom:0px;padding-top:0px"/>
+										<td class="text-center" style="border-top:1px solid transparent;padding-bottom:0px;padding-top:0px">
+											<strong><span t-field="o.company_id.street2"/></strong>, <strong><span t-field="o.company_id.city"/></strong>
+										</td>
+										<td style="border-top:1px solid transparent;padding-bottom:0px;padding-top:0px"/>
+									</tr>
+									<tr>
+										<td style="border-top:1px solid transparent;padding-bottom:0px;padding-top:0px"/>
+										<td class="text-center" style="border-top:1px solid transparent;padding-bottom:0px;padding-top:0px">
+											<strong><span t-field="o.company_id.phone"/></strong>
+										</td>
+										<td style="border-top:1px solid transparent;padding-bottom:0px;padding-top:0px"/>
+									</tr>                                                                                    
+								</tbody>
+							</table> 
+
+							<table class="table table-bordered table-condensed" style="margin-bottom:0px">
+								<tbody>
+									<tr>
+										<td class="text-left" style="border: 1px solid black;"> Supplier:</td>
+										<td class="text-left" style="border: 1px solid black;"> <strong><span t-field="o.partner_id.name"/></strong></td>
+										<td class="text-left" style="border: 1px solid black;"> PO:</td>
+										<td class="text-left" style="border: 1px solid black;"> <span t-field="o.name"/></td>
+									</tr>
+									<tr>
+										<td class="text-left" style="border: 1px solid black;"> Address:</td>
+										<td class="text-left" style="border: 1px solid black;"> <span t-field="o.partner_id.street"/>,<span t-field="o.partner_id.street2"/>, <span t-field="o.partner_id.city"/></td>
+										<td class="text-left" style="border: 1px solid black;"> Date:</td>
+										<td class="text-left" style="border: 1px solid black;"> <span t-field="o.date_order" t-options='{"format": "MMMM dd, yyyy"}'/></td>
+									</tr>
+									<tr>
+										<td class="text-left" style="border: 1px solid black;">Tels #:</td>
+										<td class="text-left" style="border: 1px solid black;"><span t-field="o.partner_id.phone"/>/<span t-field="o.partner_id.mobile"/></td>
+										<td class="text-left" style="border: 1px solid black;"> Delivery:</td>
+										<td class="text-left" style="border: 1px solid black;"></td>
+									</tr>
+									<tr>
+										<td class="text-left" style="border: 1px solid black;">Telefax #:</td>
+										<td class="text-left" style="border: 1px solid black;"><span t-field="o.partner_id.fax_number"/></td>
+										<td class="text-left" style="border: 1px solid black;"> Ref No:</td>
+										<!-- <td class="text-left" style="border: 1px solid black;"> <span t-field="o.rof_id.name"/></td> -->
+										<td class="text-left" style="border: 1px solid black;"> <span t-field="o.rof_ref_no"/></td>
+									</tr>
+									<tr>
+										<td class="text-left" style="border: 1px solid black;">PROJECT:</td>
+										<!-- <td class="text-left" colspan="3" style="border: 1px solid black;"> <span t-field="o.rof_id.project_id.name"/> <span t-field="o.area_id.name"/> <span t-field="o.zone_id.name"/></td> -->
+										<td class="text-left" colspan="3" style="border: 1px solid black;"> <span t-field="o.project_location"/></td>
+									</tr>                          
+								</tbody>
+							</table>
+							<t t-set="discount_rate" t-value="0"/>
+							<t t-foreach="o.order_line" t-as="order_line">
+								<t t-set="discount_rate" t-value="order_line.discount"/>
+							</t>
+
+							<table class="table table-bordered table-condensed">
+								<tbody>
+
+									<tr>
+										<td class="text-center" colspan="10" style="border-left: 1px solid black; border-right: 1px solid black; border-bottom: 1px solid black; border-top: 1px solid transparent;"> SUPPLY AND DELIVERY</td>
+									</tr>
+									<tr>
+										<td class="text-center" style="border: 1px solid black;">ITEM</td>
+										<td class="text-center" style="border: 1px solid black;">QTY</td>
+										<td class="text-center" style="border: 1px solid black;">UNIT</td>
+										<td class="text-center" style="border: 1px solid black;">DESCRIPTION</td>  
+
+										<td class="text-center" style="border: 1px solid black;background-color: #ffffcc !important;">COST INDICATOR</td>
+										<td class="text-center" style="border: 1px solid black;background-color: #ffffcc !important;" bgcolor="#ffffcc">NOTES</td>  
+
+
+										<td class="text-center" style="border: 1px solid black;">UNIT PRICE</td>
+										<!--
+										<td class="text-center" style="border: 1px solid black;">DISCOUNT RATE(<span t-esc="discount_rate"/> %)</td>-->
+
+										<td class="text-center" style="border: 1px solid black;"><span style="color: #FF5050 !important;">DISCOUNT (<span t-esc="discount_rate"/> %)</span></td>
+										<td class="text-center" style="border: 1px solid black;"><span>DISCOUNTED PRICE</span></td>    
+									
+										<td class="text-center" style="border: 1px solid black;">AMOUNT</td>
+									</tr>
+
+									<t t-foreach="o.order_line" t-as="order_line">
+										<t t-set="discount" t-value="order_line.price_unit *  (order_line.discount/100)"/>
+										<tr>
+											<td class="text-center" style="border: 1px solid black;">
+												<span t-field="order_line.product_id.default_code"/>
+											</td>
+											<td class="text-center" style="border: 1px solid black;">
+												<span t-field="order_line.product_qty"/>
+											</td>
+											<td class="text-center" style="border: 1px solid black;">
+												<span t-field="order_line.product_uom"/>
+											</td>
+											<td class="text-left" style="border: 1px solid black;">
+												<span t-field="order_line.name"/>
+											</td>
+
+											<!-- COST INDICATOR: N -->
+											<t t-if="order_line.cost_indicator == 'N'">
+												<td class="text-center" style="border: 1px solid black;background-color: #d6f5d6 !important;">
+													<span t-field="order_line.cost_indicator"/>
+												</td>
+												<td class="text-right" style="border: 1px solid black;background-color: #d6f5d6 !important;">
+													<span t-field="order_line.price_dropdown_notes"/>
+												</td>
+											</t>
+											<!-- COST INDICATOR: D -->
+											<t t-if="order_line.cost_indicator == 'D'">
+												<td class="text-center" style="border: 1px solid black;background-color: #ffcccc !important;">
+													<span t-field="order_line.cost_indicator"/>
+												</td>
+												<td class="text-right" style="border: 1px solid black;background-color: #ffcccc !important;">
+													<span t-field="order_line.price_dropdown_notes"/>
+												</td>
+											</t>
+											<!-- COST INDICATOR: ND -->
+											<t t-if="order_line.cost_indicator == 'ND'">
+												<td class="text-center" style="border: 1px solid black;background-color: #ccd9ff !important;">
+													<span t-field="order_line.cost_indicator"/>
+												</td>
+												<td class="text-right" style="border: 1px solid black;background-color: #ccd9ff !important;">
+													<span t-field="order_line.price_dropdown_notes"/>
+												</td>
+											</t>
+											<!-- COST INDICATOR: U -->
+											<t t-if="order_line.cost_indicator == 'U'">
+												<td class="text-center" style="border: 1px solid black;background-color: #ffe6cc !important;">
+													<span t-field="order_line.cost_indicator"/>
+												</td>
+												<td class="text-right" style="border: 1px solid black;background-color: #ffe6cc !important;">
+													<span t-field="order_line.price_dropdown_notes"/>
+												</td>
+											</t>
+											<!-- COST INDICATOR: NU -->
+											<t t-if="order_line.cost_indicator == 'NU'">
+												<td class="text-center" style="border: 1px solid black;background-color: #e6e6e6 !important;">
+													<span t-field="order_line.cost_indicator"/>
+												</td>
+												<td class="text-right" style="border: 1px solid black;background-color: #e6e6e6 !important;">
+													<span t-field="order_line.price_dropdown_notes"/>
+												</td>
+											</t>
+											<!-- COST INDICATOR: P and OTHERS -->
+											<t t-if="not order_line.cost_indicator or order_line.cost_indicator == 'P'">
+												<td class="text-center" style="border: 1px solid black;background-color: #ffffcc !important;">
+													<span t-field="order_line.cost_indicator"/>
+												</td>
+												<td class="text-right" style="border: 1px solid black;background-color: #ffffcc !important;">
+													<span t-field="order_line.price_dropdown_notes"/>
+												</td>
+											</t>
+
+											
+
+											<td class="text-right" style="border: 1px solid black;">
+												<span t-field="order_line.price_unit"/>
+											</td>
+
+											<td class="text-right" style="border: 1px solid black;">
+												<span style="color: #FF5050 !important;" t-esc="'{0:,.2f}'.format(discount)"/>
+											</td>
+
+											<td class="text-right" style="border: 1px solid black;">
+												<!-- <span style="color: #FF5050 !important;" t-esc="'{0:,.2f}'.format((order_line.product_qty * order_line.price_unit)  *  (order_line.discount/100))"/> -->
+												<span t-esc="'{0:,.2f}'.format(order_line.price_unit - discount)"/>
+											</td>
+
+											<td class="text-right" style="border: 1px solid black;">
+												<t t-if="order_line.override_price_subtotal > 0">
+													<span t-field="order_line.price_subtotal"/>
+												</t>
+												<t t-else="">
+													<span t-esc="'{0:,.2f}'.format(order_line.product_qty * (order_line.price_unit - discount))"/>
+												</t>
+											</td>
+										</tr>
+									</t>
+
+									<tr>
+										<td class="text-center" colspan="10" style="border: 1px solid black;">***NOTHING FOLLOWS***</td>
+									</tr>
+									<tr>
+										<td class="text-right" colspan="9" style="border: 1px solid black;">Grand Total in Php <span t-if="o.amount_tax &gt; 0">(Vat INC)</span><span t-if="o.amount_tax == 0">(Vat EX)</span></td>
+										<!-- <td class="text-right" style="border: 1px solid black;"><span t-field="o.amount_untaxed"/></td> -->
+										<td class="text-right" style="border: 1px solid black;"><span t-field="o.amount_total"/></td>
+									</tr>                                                            
+								</tbody>
+							</table>
+
+							<p t-field="o.notes"/>
+							<div class="oe_structure"/>
+
+
+							<!-- <div class="row mt32 mb32"> 
+								<t t-foreach="o.e_signature" t-as="items">
+									<t t-if="items.sequence in [1,2,3,4,5,6] and items.is_rejected == False">
+										<div class="col-xs-2">
+											<p><span t-field="items.report_user_penmanship" style="font-weight:bold"/></p>
+											<p style="width:100px; height:90px;"><span t-field="items.user_id.e_signature" t-field-options="{&quot;widget&quot;: &quot;image&quot;}"/></p>
+											<p><span t-field="items.user_id.name"/></p>
+											<p><span t-field="items.date_stamp"/></p>                        
+										</div>                                      
+									</t>
+								</t>                           
+							 </div> -->
+							<div class="row mt32 mb32"> 
+								<t t-if="o.is_po_paid_by_cash == True">
+									<t t-foreach="o.e_signature" t-as="items">
+										<t t-if="items.sequence in [1,2,3,4,5,6] and items.is_rejected == False">
+											<div class="col-xs-2">
+												<p><span t-field="items.report_user_penmanship" style="font-weight:bold"/></p>
+												<p style="width:100px; height:90px;"><span t-field="items.user_id.e_signature" t-field-options="{&quot;widget&quot;: &quot;image&quot;}"/></p>
+												<p><span t-field="items.user_id.name"/></p>
+												<p><span t-field="items.date_stamp"/></p>                        
+											</div>                                      
+										</t>
+									</t>                              
+								</t>
+								<t t-if="not o.is_po_paid_by_cash">
+									<t t-foreach="o.e_signature" t-as="items">
+										<t t-if="items.sequence in [1,2,3,4,5,6] and items.is_rejected == False and items.state != 'approve_ceo'">
+											<div class="col-xs-2">
+												<p><span t-field="items.report_user_penmanship" style="font-weight:bold"/></p>
+												<p style="width:100px; height:90px;"><span t-field="items.user_id.e_signature" t-field-options="{&quot;widget&quot;: &quot;image&quot;}"/></p>
+												<p align="center"><span t-field="items.user_id.name"/></p>
+												<p align="center"><span t-field="items.date_stamp"/></p>                        
+											</div>                                      
+										</t>
+									</t>                              
+								</t>                          
+							</div>           
+
+							 <div class="row mt32 mb32"> 
+								<t t-foreach="o.e_signature" t-as="items">
+									<t t-if="items.sequence in [7,8,9,10,11,12] and items.is_rejected == False">
+										<div class="col-xs-2">
+											<p><span t-field="items.report_user_penmanship" style="font-weight:bold"/></p>
+											<p style="width:100px; height:90px;"><span t-field="items.user_id.e_signature" t-field-options="{&quot;widget&quot;: &quot;image&quot;}"/></p>
+											<p><span t-field="items.user_id.name"/></p>
+											<p><span t-field="items.date_stamp"/></p>                        
+										</div>                                      
+									</t>
+								</t>                          
+							</div> 
+							<!--
+
+								<div class="row mt32 mb32"> 
+										<div class="col-xs-2" t-foreach="o.e_signature" t-as="items">
+												<t t-if="items.sequence in [1,2,3,4,5,6] and items.is_rejected == False">                                    
+														<p><span t-field="items.report_user_penmanship" style="font-weight:bold"/></p>
+														<p style="width:100px; height:90px;"><span t-field="items.user_id.e_signature" t-field-options="{&quot;widget&quot;: &quot;image&quot;}"/></p>
+														<p><span t-field="items.user_id.name"/></p>
+														<p><span t-field="items.date_stamp"/></p>                        
+												</t>
+
+										</div>  
+								 </div>             
+
+								 <div class="row mt32 mb32"> 
+										<div class="col-xs-2" t-foreach="o.e_signature" t-as="items">
+												<t t-if="items.sequence in [7,8,9,10,11,12] and items.is_rejected == False">
+														<p><span t-field="items.report_user_penmanship" style="font-weight:bold"/></p>
+														<p style="width:100px; height:90px;"><span t-field="items.user_id.e_signature" t-field-options="{&quot;widget&quot;: &quot;image&quot;}"/></p>
+														<p><span t-field="items.user_id.name"/></p>
+														<p><span t-field="items.date_stamp"/></p>                        
+												</t>
+										</div>  
+								 </div> 
+							-->                         
+							<!--
+								<p style="font-size:80%"><strong>Signature over Printed Name</strong></p>
+								<p style="font-size:70%"><strong>Date:<span t-esc="o.getDateToday()"/></strong></p>
+							-->
+
+						</div>
+					</div>
+					<div class="footer">
+						<div class="text-center text-muted">
+							<span t-field="o.name"/> | Page <span class="page"/> of <span class="topage"/>
+						</div>
+					</div>
+				</t>           
+			</t>
+		</template>
+
+	</data>
+</odoo>
