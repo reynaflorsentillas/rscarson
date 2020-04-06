@@ -24,10 +24,10 @@ class PurchaseOrder(models.Model):
         self.write({'state': 'validate_warehouse_supervisor'})
         return True
 
-    @api.one
-    def action_invoice_open(self):
-        self.write({'state': 'open'})
-        return True
+    # @api.one
+    # def action_invoice_open(self):
+    #     self.write({'state': 'open'})
+    #     return True
 
 
     # @api.multi
@@ -42,10 +42,10 @@ class PurchaseOrder(models.Model):
     #     to_open_invoices.action_move_create()
     #     return to_open_invoices.invoice_validate()
 
-    @api.multi
-    def invoice_validate(self):
-        self.write({'state': 'open'})
-        for invoice in self.filtered(lambda invoice: invoice.partner_id not in invoice.message_partner_ids):
-            invoice.message_subscribe([invoice.partner_id.id])
-        self._check_duplicate_supplier_reference()
-        return self
+    # @api.multi
+    # def invoice_validate(self):
+    #     self.write({'state': 'open'})
+    #     for invoice in self.filtered(lambda invoice: invoice.partner_id not in invoice.message_partner_ids):
+    #         invoice.message_subscribe([invoice.partner_id.id])
+    #     self._check_duplicate_supplier_reference()
+    #     return self
