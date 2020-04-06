@@ -1,7 +1,6 @@
 from odoo import models, fields, api, _
 from odoo.tools import float_is_zero, float_compare, pycompat
-
-
+from odoo.exceptions import UserError
 
 class PurchaseOrder(models.Model):
     _inherit = "account.invoice"
