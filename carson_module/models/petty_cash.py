@@ -30,17 +30,17 @@ class PurchaseOrder(models.Model):
         return True
 
 
-    @api.multi
-    def action_invoice_open(self):
-        # lots of duplicate calls to action_invoice_open, so we remove those already open
-        to_open_invoices = self.filtered(lambda inv: inv.state != 'open')
-        if to_open_invoices.filtered(lambda inv: inv.state != 'validate_ceo'):
-            raise UserError(_("Invoice must be in draft state in order to validate it."))
-        if to_open_invoices.filtered(lambda inv: float_compare(inv.amount_total, 0.0, precision_rounding=inv.currency_id.rounding) == -1):
-            raise UserError(_("You cannot validate an invoice with a negative total amount. You should create a credit note instead."))
-        to_open_invoices.action_date_assign()
-        to_open_invoices.action_move_create()
-        return to_open_invoices.invoice_validate()
+    # @api.multi
+    # def action_invoice_open(self):
+    #     # lots of duplicate calls to action_invoice_open, so we remove those already open
+    #     to_open_invoices = self.filtered(lambda inv: inv.state != 'open')
+    #     if to_open_invoices.filtered(lambda inv: inv.state != 'validate_ceo'):
+    #         raise UserError(_("Invoice must be in draft state in order to validate it."))
+    #     if to_open_invoices.filtered(lambda inv: float_compare(inv.amount_total, 0.0, precision_rounding=inv.currency_id.rounding) == -1):
+    #         raise UserError(_("You cannot validate an invoice with a negative total amount. You should create a credit note instead."))
+    #     to_open_invoices.action_date_assign()
+    #     to_open_invoices.action_move_create()
+    #     return to_open_invoices.invoice_validate()
 
     @api.multi
     def invoice_validate(self):
